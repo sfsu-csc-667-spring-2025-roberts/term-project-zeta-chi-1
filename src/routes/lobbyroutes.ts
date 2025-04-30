@@ -9,6 +9,7 @@ router.get('/play', ensureAuthenticated, (_req, res) => {
   res.render('pages/play', { title: 'Play' });
 });
 
+
 /* ---------- JSON API ---------- */
 router.get('/api/lobbies', ensureAuthenticated, (_req, res) => {
   res.json(listLobbies());

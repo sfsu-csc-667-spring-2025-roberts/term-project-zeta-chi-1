@@ -13,4 +13,5 @@ router.get("/home", (_req, res) => {
   res.redirect("/");           // keep one canonical path
 });
 
+
 export default router;
