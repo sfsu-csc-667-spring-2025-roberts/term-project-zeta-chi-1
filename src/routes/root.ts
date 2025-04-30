@@ -1,14 +1,16 @@
-import express from "express";
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
-// Home page at "/"
 router.get("/", (_req, res) => {
   res.render("pages/home", { title: "Home" });
 });
 
-// (Optional) duplicate route at "/home"
+router.get("/play", (_req, res) => {
+  res.render("pages/play", { title: "Play" });
+});
+
 router.get("/home", (_req, res) => {
-  res.render("pages/home", { title: "Home" });
+  res.redirect("/");           // keep one canonical path
 });
 
 export default router;

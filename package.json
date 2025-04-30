@@ -10,16 +10,22 @@
     "prepare": "husky",
     "db:create": "node-pg-migrate create -j ts --",
     "db:migrate": "ts-node node_modules/node-pg-migrate/bin/migrate.js -j ts",
-    "db:rollback": "ts-node node_modules/node-pg-migrate/bin/node-pg-migrate.js down -j ts"
+    "db:rollback": "ts-node node_modules/node-pg-migrate/bin/node-pg-migrate.js down -j ts",
+    "db:test": "ts-node -e \"import 'dotenv/config';import { Client } from 'pg';(async()=>{const c=new Client();await c.connect();console.log('✅  DB connected');await c.end()})();\"",
+    "tsc:noemit": "ts-node --transpile-only -e \"require('child_process').spawnSync('npx',['tsc','--noEmit'],{stdio:'inherit'})\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.1",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.10",
+    "@types/pg": "^8.11.14",
+    "@types/uuid": "^10.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
     "nodemon": "^3.1.9",
@@ -33,10 +39,12 @@
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^5.0.1",
+    "express-validator": "^7.2.1",
     "http-errors": "^2.0.0",
     "morgan": "^1.10.0",
     "node-pg-migrate": "^7.9.1",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "socket.io": "^4.8.1"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
