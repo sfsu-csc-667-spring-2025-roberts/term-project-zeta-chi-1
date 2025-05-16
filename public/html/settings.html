@@ -1,0 +1,75 @@
+<!-- public/html/settings.html --> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Settings</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+     <header class="top-bar">
+        <div class="logo"><a href="/home">
+            <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
+        </a></div>
+        <div class="account-menu">
+            <button id="account-icon" class="account-icon">👤</button>
+            <div id="dropdown-menu" class="dropdown-content hidden">
+                <a href="/settings">Settings</a>
+                <a href="#" id="logout-link">Logout</a>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <h1 id="title-h1"></h1>
+
+        <!-- User email display -->
+        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
+            <strong>Account Email: </strong>
+            <span id="user-email" style="font-weight: bold; color: #333;">Loading...</span>
+        </div>
+
+        <p><a href="/home">Back to Home</a></p>
+    </div>
+
+     <script src="/js/home.js"></script>
+
+     <script>
+        const titleh1 = document.getElementById('title-h1');
+        titleh1.innerText = document.title;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailSpan = document.getElementById('user-email');
+
+            async function fetchUserEmail() {
+                if (!emailSpan) return;
+
+                try {
+                    const response = await fetch('/api/auth/me');
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.user && data.user.email) {
+                            emailSpan.textContent = data.user.email;
+                        } else {
+                            emailSpan.textContent = 'Could not load email.';
+                            console.warn('User data or email missing in response:', data);
+                        }
+                    } else if (response.status === 401) {
+                         emailSpan.textContent = 'Not logged in.';
+                    } else {
+                         emailSpan.textContent = 'Error loading email.';
+                         console.error('Failed to fetch user data:', response.status, response.statusText);
+                    }
+                } catch (error) {
+                    emailSpan.textContent = 'Error loading email.';
+                    console.error('Error fetching user data:', error);
+                }
+            }
+
+            fetchUserEmail();
+        });
+     </script>
+</body>
+</html>

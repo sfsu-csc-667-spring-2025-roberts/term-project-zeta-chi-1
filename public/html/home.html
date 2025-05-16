@@ -1,0 +1,162 @@
+<!-- public/html/home.html --> 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Homepage</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo"><a href="/home">
+            <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
+        </a></div>
+        <div class="account-menu">
+            <button id="account-icon" class="account-icon">👤</button>
+            <div id="dropdown-menu" class="dropdown-content hidden">
+                <a href="/settings">Settings</a>
+                <a href="#" id="logout-link">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Welcome to UNO!</h1>
+
+        <div id="game-status" style="text-align: center; margin-top: 20px;">
+            <p id="queue-message">Click below to find a game.</p>
+            <button id="queue-button">Join UNO Queue</button>
+        </div>
+
+         <div id="stats" style="margin-top: 30px; text-align: center;">
+             <h3>Your Stats</h3>
+             <p>Wins: <span id="user-wins">Loading...</span></p>
+             <p>Losses: <span id="user-losses">Loading...</span></p>
+         </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/home.js"></script>
+    <!-- Matchmaking Script -->
+     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SocketIO Setup
+            const socket = io({
+                reconnection: true,
+                reconnectionAttempts: 5, // Number of attempts
+                reconnectionDelay: 1000, // Initial delay
+            });
+
+            // DOM elements
+            const queueButton = document.getElementById('queue-button');
+            const queueMessage = document.getElementById('queue-message');
+            const winsSpan = document.getElementById('user-wins');
+            const lossesSpan = document.getElementById('user-losses');
+
+            // State
+            let inQueue = false;
+            let currentTimeout = null; // Cancels redir timeout
+
+            // Functions
+            function updateQueueButton() {
+                if (queueButton) {
+                    queueButton.textContent = inQueue ? 'Leave Queue' : 'Join UNO Queue';
+                    queueButton.disabled = false; // Check for button enabled
+                }
+            }
+
+            async function fetchStats() {
+               if (!winsSpan || !lossesSpan) return;
+               try {
+                  const response = await fetch('/api/auth/me'); // Use auth endpoint
+                  if (response.ok) {
+                      const { user } = await response.json();
+                      winsSpan.textContent = user.wins ?? 0;
+                      lossesSpan.textContent = user.losses ?? 0;
+                  } else {
+                       winsSpan.textContent = 'Error';
+                       lossesSpan.textContent = 'Error';
+                       console.error("Failed to fetch stats:", response.statusText);
+                  }
+               } catch (err) {
+                    winsSpan.textContent = 'Error';
+                    lossesSpan.textContent = 'Error';
+                    console.error("Failed to fetch stats:", err);
+               }
+            }
+
+            // Socket Event Handlers
+            socket.on('connect_error', (err) => {
+                console.error('Socket connection error:', err.message);
+                if (queueMessage) queueMessage.textContent = 'Error connecting to game server. Trying to reconnect...';
+                if (queueButton) queueButton.disabled = true;
+            });
+
+             socket.on('connect', () => {
+                console.log('Socket connected successfully:', socket.id);
+                if (queueMessage) queueMessage.textContent = 'Connected to server. Click to join game queue!';
+                if (queueButton) queueButton.disabled = false;
+            });
+
+            socket.on('disconnect', (reason) => {
+                 console.warn('Socket disconnected:', reason);
+                 if (queueMessage) queueMessage.textContent = 'Disconnected from server. Please refresh.';
+                 if (queueButton) queueButton.disabled = true;
+                 inQueue = false; // Reset queue status on disconnect
+                 updateQueueButton();
+                 if (currentTimeout) clearTimeout(currentTimeout);
+            });
+
+
+            socket.on('queueUpdate', (data) => {
+                console.log('Queue Update:', data.message);
+                if (queueMessage) queueMessage.textContent = data.message;
+                 inQueue = data.inQueue ?? inQueue; // Update queue status based on server ack
+                 updateQueueButton();
+            });
+
+            socket.on('gameStarting', (data) => {
+                console.log('Game starting!', data);
+                if (queueMessage) queueMessage.textContent = `Game found! Joining game ${data.gameId}...`;
+                if (queueButton) queueButton.disabled = true;   // Disable button
+                currentTimeout = setTimeout(() => {             // Redirect to game page route
+                    window.location.href = `/game?gameId=${data.gameId}`;
+                }, 1500);
+            });
+
+             socket.on('gameError', (data) => {
+                 console.error('Game Error:', data.message);
+                 if (queueMessage) queueMessage.textContent = `Error: ${data.message}`;
+                 inQueue = false; // Reset queue status on error
+                 updateQueueButton();
+                 if (currentTimeout) clearTimeout(currentTimeout);
+             });
+
+
+            // Initial Setup
+            if (queueButton && queueMessage) {
+                 queueButton.addEventListener('click', () => {
+                    if (socket.connected) { // Check for connection to allow action
+                        if (inQueue) {
+                            socket.emit('leaveQueue');
+                            queueMessage.textContent = 'Leaving queue...';
+                        } else {
+                            socket.emit('joinQueue');
+                            queueMessage.textContent = 'Joining queue...';
+                        }
+                    } else {
+                         queueMessage.textContent = 'Not connected to server. Please wait or refresh.';
+                    }
+                 });
+            }
+
+            fetchStats();
+
+        });
+    </script>
+
+</body>
+</html>
