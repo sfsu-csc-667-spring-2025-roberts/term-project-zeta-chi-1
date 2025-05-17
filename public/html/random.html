@@ -1,3 +1,4 @@
+<!-- public/html/game.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,56 +9,46 @@
 </head>
 <body>
 <div class="game-container">
+        <h1 id="title-h1">UNO Game</h1>
 
-    <div id="other-players-hands" >
-        <!-- Opponents' hands will be rendered here -->
-    </div>
-
-
-
-    <div class="center-board">
-        <div class="draw-area">
-            <div class="pile-label">Draw Pile</div>
-            <div class="card back"></div>
+    USERS INFORMATION
+        <div class="players-area" id="players-area">
+            <!-- Players will be rendered here -->
         </div>
 
-        <div class="pilee-area">
+    <div class="center-board">
+        <div class="pile-area">
+            <div class="pile-label">Draw Pile</div>
+            <div class="card back"></div>
+            <div class="deck-count">Cards Left: <span id="deck-count">?</span></div>
+            <button id="draw-button" disabled>Draw Card</button>
+        </div>
+
+        <div class="pile-area">
             <div class="pile-label">Discard Pile</div>
             <div id="discard-pile" class="discard-pile">
                 <div id="top-card-display">(Empty)</div>
             </div>
+            <button id="uno-button" disabled>Call UNO!</button>
         </div>
     </div>
 
+        <div class="message-area" id="message-area">Waiting for game state...</div>
 
-
-    <div class="color-picker" id="color-picker" style="display: none;">
+        <div class="color-picker" id="color-picker" style="display: none;">
+            <p>Choose the next color:</p>
             <button data-color="red" class="red"></button>
             <button data-color="green" class="green"></button>
             <button data-color="blue" class="blue"></button>
             <button data-color="yellow" class="yellow"></button>
         </div>
 
-    <div class="player-hand-container">
-        <div class="message-area" id="message-area">Waiting for game state...</div>
-
-        <div class="hand-and-buttons">
-            <div class="hand" id="player-hand">
-                <!-- Cards go here -->
-            </div>
-            <div class="button-group">
-                <button id="draw-button" disabled>Draw Card</button>
-                <button id="uno-button" disabled>Call UNO!</button>
-            </div>
+        <h2 id="handh2">Your ✋🏼</h2>
+        <div class="hand" id="player-hand">
+            <!-- Cards will be rendered here -->
         </div>
 
-
-        <div id="game-id-display" class="gameID">Game ID: Loading...</div>
-
-    </div>
-
-
-
+        <div id="game-id-display">Game ID: Loading...</div>
 
 </div>
 

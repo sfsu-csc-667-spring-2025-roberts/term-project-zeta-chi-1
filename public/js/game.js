@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const colorPicker = document.getElementById('color-picker');
     const handh2 = document.getElementById('handh2');
 
+
     // Game State Vars
     let myPlayerId = null;
     let currentGameState = null;
@@ -133,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 handh2.textContent = curr_email.concat("'s ✋🏼");
             }
         }
-    
+
         if (deckCountSpan) deckCountSpan.textContent = state.drawPileSize; // Renders the deck
     
         // Check if player has playable cards on their turn
@@ -238,6 +239,35 @@ document.addEventListener('DOMContentLoaded', () => {
              const existingHomeButton = document.getElementById('back-to-home-btn');
              if (existingHomeButton) existingHomeButton.remove();
         }
+
+        const otherPlayersHandsContainer = document.getElementById('other-players-hands');
+        if (otherPlayersHandsContainer) {
+            otherPlayersHandsContainer.innerHTML = ''; // Clear previous
+
+            state.players.forEach(player => {
+                if (player.id !== myPlayerId) {
+                    const handDiv = document.createElement('div');
+                    handDiv.classList.add('opponent-hand');
+
+                    const label = document.createElement('div');
+                    label.textContent = `${player.email}'s Cards (${player.cardCount})`;
+                    handDiv.appendChild(label);
+
+                    const cardsDiv = document.createElement('div');
+                    cardsDiv.classList.add('opponent-cards');
+
+                    for (let i = 0; i < player.cardCount; i++) {
+                        const cardBack = document.createElement('div');
+                        cardBack.classList.add('card-back');
+                        cardsDiv.appendChild(cardBack);
+                    }
+
+                    handDiv.appendChild(cardsDiv);
+                    otherPlayersHandsContainer.appendChild(handDiv);
+                }
+            });
+        }
+
     }
 
      function showTemporaryMessage(msg, type = 'info') {
