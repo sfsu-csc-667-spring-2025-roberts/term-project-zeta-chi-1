@@ -4,14 +4,20 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #002b5c;
     color: white;
+    height: 100vh;
     display: flex;
-    justify-content: center;     /* Centers horizontally */
-    align-items: center;         /* Centers vertically */
-    height: 100vh;               /* Full viewport height */
+    flex-direction: column;
+    justify-content: center; /* Center main content vertically */
+    align-items: center;     /* Center main content horizontally */
 }
 
 .game-container {
-    /* Add styling here if needed */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .center-board {
@@ -19,7 +25,7 @@ body {
     justify-content: center;
     align-items: center;
     gap: 40px;
-    margin: 30px 0;
+    margin-bottom: 100px; /* Push it away from bottom hand */
 }
 
 .pilee-area {
@@ -109,10 +115,9 @@ button:disabled {
 
 #player-hand {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: 20px;
+    justify-content: center;
 }
 
 #player-hand .card {
@@ -121,10 +126,16 @@ button:disabled {
     font-size: 18px; /* Optional: scales down text to fit */
 }
 
-
-
-
-
+.player-hand-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #002b5c;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 .card::before {
     position: absolute;
@@ -183,3 +194,50 @@ button:disabled {
 .card:hover {
      transform: translateY(-10px);
  }
+
+.gameID {
+    font-size: 10px;
+}
+
+.color-picker {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.color-picker button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+
+.color-picker .red { background-color: #e53935; }
+.color-picker .green { background-color: #43a047; }
+.color-picker .blue { background-color: #1e88e5; }
+.color-picker .yellow { background-color: #fdd835; }
+
+
+.message-area {
+    margin-bottom: 15px;
+    color: white;
+}
+
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hand-and-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px; /* space between cards and buttons */
+    flex-wrap: wrap; /* allow wrapping on small screens */
+}

@@ -25,10 +25,31 @@
     </div>
 
 
-    <h2 id="handh2">Your ✋🏼</h2>
-    <div class="hand" id="player-hand">
-        <!-- Cards will be rendered here -->
+
+    <div class="color-picker" id="color-picker" style="display: none;">
+            <button data-color="red" class="red"></button>
+            <button data-color="green" class="green"></button>
+            <button data-color="blue" class="blue"></button>
+            <button data-color="yellow" class="yellow"></button>
+        </div>
+
+    <div class="player-hand-container">
+        <div class="message-area" id="message-area">Waiting for game state...</div>
+
+        <div class="hand-and-buttons">
+            <div class="hand" id="player-hand">
+                <!-- Cards go here -->
+            </div>
+            <div class="button-group">
+                <button id="draw-button" disabled>Draw Card</button>
+                <button id="uno-button" disabled>Call UNO!</button>
+            </div>
+        </div>
+
+        <div id="game-id-display" class="gameID">Game ID: Loading...</div>
     </div>
+
+
 
 
 </div>
