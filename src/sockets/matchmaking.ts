@@ -222,7 +222,7 @@ export function setupMatchmaking(io: SocketIOServer) {
         });
 
 
-        // Game Actions handler
+        // game Actions handler
         socket.on('playCard', ({ gameId, cardId, chosenColor }) => {
             console.log(`[Server Socket] Received "playCard": User=${user?.email}, Socket=${socket.id}, Data=`, { gameId, cardId, chosenColor });
 

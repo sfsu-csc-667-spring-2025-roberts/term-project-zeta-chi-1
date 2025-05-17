@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a70c15ad-6a10-49cf-b4ae-5a0636d7fdc8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/authController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/authController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/authentication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/authentication.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/views/auth/register.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/views/auth/register.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sockets/matchmaking.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/sockets/matchmaking.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,18 +24,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "fileTemplates",
-    "ts.external.directory.path": "/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;fileTemplates&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/node_modules/typescript/lib&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -55,7 +52,8 @@
       <option name="presentableId" value="Default" />
       <updated>1707252385223</updated>
       <workItem from="1747431805210" duration="5238000" />
-      <workItem from="1747439636538" duration="8517000" />
+      <workItem from="1747439636538" duration="9117000" />
+      <workItem from="1747450193575" duration="58000" />
     </task>
     <servers />
   </component>
