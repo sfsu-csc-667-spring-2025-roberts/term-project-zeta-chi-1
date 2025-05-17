@@ -120,3 +120,66 @@ button:disabled {
     height: 90px;
     font-size: 18px; /* Optional: scales down text to fit */
 }
+
+
+
+
+
+
+.card::before {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 16px;
+}
+
+.card::after {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 16px;
+    transform: rotate(180deg);
+}
+
+
+.card.number::before, .card.number::after {
+    content: attr(data-value);
+}
+
+.card.skip::before, .card.skip::after {
+    content: "⊘";
+}
+
+.card.reverse::before, .card.reverse::after {
+    content: "⟲";
+}
+
+.card.draw-two::before, .card.draw-two::after {
+    content: "+2";
+}
+
+.card.wild-draw-four::before, .card.wild-draw-four::after {
+    content: "+4";
+}
+
+.card.wild-color::before, .card.wild-color::after {
+    content: "★";
+}
+
+
+.card.red { background-color: #e53935; color: white; }
+.card.green { background-color: #43a047; color: white; }
+.card.blue { background-color: #1e88e5; color: white; }
+.card.yellow { background-color: #fdd835; color: black; }
+.card.wild {
+    background: linear-gradient(45deg,
+    #e53935 0%, #e53935 25%,
+    #43a047 25%, #43a047 50%,
+    #1e88e5 50%, #1e88e5 75%,
+    #fdd835 75%, #fdd835 100%);
+    color: white;
+}
+
+.card:hover {
+     transform: translateY(-10px);
+ }
