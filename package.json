@@ -7,7 +7,10 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
-    "uno": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
+    "uno": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "migrate:create": "node-pg-migrate create",
+    "migrate":        "dotenv -e .env -- node-pg-migrate up",
+    "migrate:down":   "dotenv -e .env -- node-pg-migrate down"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +37,8 @@
     "@types/socket.io": "^3.0.1",
     "@types/uuid": "^10.0.0",
     "concurrently": "^9.1.2",
+    "dotenv-cli": "^8.0.0",
+    "node-pg-migrate": "^7.9.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
