@@ -1,5 +1,3 @@
-<!-- public/html/home.html --> 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,156 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Homepage</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+        .game-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .create-game-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .create-game-form input,
+        .create-game-form select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .lobby-list, .games-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lobby-item, .games-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .lobby-info, .game-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lobby-name {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .message.info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e8f5e9;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+    </style>
 </head>
 <body>
-    <header class="top-bar">
-        <div class="logo"><a href="/home">
-            <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
-        </a></div>
-        <div class="account-menu">
-            <button id="account-icon" class="account-icon">👤</button>
-            <div id="dropdown-menu" class="dropdown-content hidden">
-                <a href="/settings">Settings</a>
-                <a href="#" id="logout-link">Logout</a>
-            </div>
+<header class="top-bar">
+    <div class="logo"><a href="/home">
+        <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
+    </a></div>
+    <div class="account-menu">
+        <button id="account-icon" class="account-icon">👤</button>
+        <div id="dropdown-menu" class="dropdown-content hidden">
+            <a href="/settings">Settings</a>
+            <a href="#" id="logout-link">Logout</a>
         </div>
-    </header>
+    </div>
+</header>
 
-    <div class="container">
-        <h1>Welcome to UNO!</h1>
+<div class="container">
+    <h1>Welcome to UNO!</h1>
 
-        <div id="game-status" style="text-align: center; margin-top: 20px;">
-            <p id="queue-message">Click below to find a game.</p>
-            <button id="queue-button">Join UNO Queue</button>
+    <p id="status-message" style="text-align: center; margin: 20px 0;">
+        Connecting to server...
+    </p>
+
+    <div class="game-section">
+        <h2>Create a Game</h2>
+        <div class="create-game-form">
+            <input type="text" id="game-name-input" placeholder="Game Name" required>
+            <select id="max-players-select">
+                <option value="2">2 Players</option>
+                <option value="3">3 Players</option>
+                <option value="4">4 Players</option>
+            </select>
+            <button id="create-game-btn" disabled>Create Game</button>
         </div>
-
-         <div id="stats" style="margin-top: 30px; text-align: center;">
-             <h3>Your Stats</h3>
-             <p>Wins: <span id="user-wins">Loading...</span></p>
-             <p>Losses: <span id="user-losses">Loading...</span></p>
-         </div>
-
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/home.js"></script>
-    <!-- Matchmaking Script -->
-     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // SocketIO Setup
-            const socket = io({
-                reconnection: true,
-                reconnectionAttempts: 5, // Number of attempts
-                reconnectionDelay: 1000, // Initial delay
-            });
+    <div class="game-section">
+        <div class="section-title">
+            <h2>Game Lobbies</h2>
+            <button class="refresh-btn" id="refresh-lobbies">Refresh</button>
+        </div>
+        <p>Join an existing game lobby:</p>
+        <ul id="lobby-list" class="lobby-list">
+            <li>Loading lobbies...</li>
+        </ul>
+    </div>
 
-            // DOM elements
-            const queueButton = document.getElementById('queue-button');
-            const queueMessage = document.getElementById('queue-message');
-            const winsSpan = document.getElementById('user-wins');
-            const lossesSpan = document.getElementById('user-losses');
+    <div class="game-section">
+        <div class="section-title">
+            <h2>Active Games</h2>
+            <button class="refresh-btn" id="refresh-games">Refresh</button>
+        </div>
+        <p>Resume or spectate active games:</p>
+        <ul id="games-list" class="games-list">
+            <li>Loading games...</li>
+        </ul>
+    </div>
 
-            // State
-            let inQueue = false;
-            let currentTimeout = null; // Cancels redir timeout
+    <div class="game-section">
+        <h2>Your Stats</h2>
+        <div class="stats-container">
+            <div class="stat-box">
+                <h3>Wins</h3>
+                <p id="user-wins">Loading...</p>
+            </div>
+            <div class="stat-box">
+                <h3>Losses</h3>
+                <p id="user-losses">Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Functions
-            function updateQueueButton() {
-                if (queueButton) {
-                    queueButton.textContent = inQueue ? 'Leave Queue' : 'Join UNO Queue';
-                    queueButton.disabled = false; // Check for button enabled
-                }
-            }
-
-            async function fetchStats() {
-               if (!winsSpan || !lossesSpan) return;
-               try {
-                  const response = await fetch('/api/auth/me'); // Use auth endpoint
-                  if (response.ok) {
-                      const { user } = await response.json();
-                      winsSpan.textContent = user.wins ?? 0;
-                      lossesSpan.textContent = user.losses ?? 0;
-                  } else {
-                       winsSpan.textContent = 'Error';
-                       lossesSpan.textContent = 'Error';
-                       console.error("Failed to fetch stats:", response.statusText);
-                  }
-               } catch (err) {
-                    winsSpan.textContent = 'Error';
-                    lossesSpan.textContent = 'Error';
-                    console.error("Failed to fetch stats:", err);
-               }
-            }
-
-            // Socket Event Handlers
-            socket.on('connect_error', (err) => {
-                console.error('Socket connection error:', err.message);
-                if (queueMessage) queueMessage.textContent = 'Error connecting to game server. Trying to reconnect...';
-                if (queueButton) queueButton.disabled = true;
-            });
-
-             socket.on('connect', () => {
-                console.log('Socket connected successfully:', socket.id);
-                if (queueMessage) queueMessage.textContent = 'Connected to server. Click to join game queue!';
-                if (queueButton) queueButton.disabled = false;
-            });
-
-            socket.on('disconnect', (reason) => {
-                 console.warn('Socket disconnected:', reason);
-                 if (queueMessage) queueMessage.textContent = 'Disconnected from server. Please refresh.';
-                 if (queueButton) queueButton.disabled = true;
-                 inQueue = false; // Reset queue status on disconnect
-                 updateQueueButton();
-                 if (currentTimeout) clearTimeout(currentTimeout);
-            });
-
-
-            socket.on('queueUpdate', (data) => {
-                console.log('Queue Update:', data.message);
-                if (queueMessage) queueMessage.textContent = data.message;
-                 inQueue = data.inQueue ?? inQueue; // Update queue status based on server ack
-                 updateQueueButton();
-            });
-
-            socket.on('gameStarting', (data) => {
-                console.log('Game starting!', data);
-                if (queueMessage) queueMessage.textContent = `Game found! Joining game ${data.gameId}...`;
-                if (queueButton) queueButton.disabled = true;   // Disable button
-                currentTimeout = setTimeout(() => {             // Redirect to game page route
-                    window.location.href = `/game?gameId=${data.gameId}`;
-                }, 1500);
-            });
-
-             socket.on('gameError', (data) => {
-                 console.error('Game Error:', data.message);
-                 if (queueMessage) queueMessage.textContent = `Error: ${data.message}`;
-                 inQueue = false; // Reset queue status on error
-                 updateQueueButton();
-                 if (currentTimeout) clearTimeout(currentTimeout);
-             });
-
-
-            // Initial Setup
-            if (queueButton && queueMessage) {
-                 queueButton.addEventListener('click', () => {
-                    if (socket.connected) { // Check for connection to allow action
-                        if (inQueue) {
-                            socket.emit('leaveQueue');
-                            queueMessage.textContent = 'Leaving queue...';
-                        } else {
-                            socket.emit('joinQueue');
-                            queueMessage.textContent = 'Joining queue...';
-                        }
-                    } else {
-                         queueMessage.textContent = 'Not connected to server. Please wait or refresh.';
-                    }
-                 });
-            }
-
-            fetchStats();
-
-        });
-    </script>
-
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/home.js"></script>
 </body>
 </html>
