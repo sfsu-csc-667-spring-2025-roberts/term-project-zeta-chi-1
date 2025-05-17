@@ -90,7 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const playerDiv = document.createElement('div');
                 playerDiv.classList.add('player-info');
                 playerDiv.id = `player-${player.id}`;
-                playerDiv.textContent = `${player.email} (${player.cardCount} cards)`;
+
+                const name = player.firstName || player.email || 'Player';
+                playerDiv.textContent = `${name} (${player.cardCount} cards)`;
+
+
      
                 if (player.id === state.currentPlayerId && !state.isGameOver) {
                     playerDiv.classList.add('current-turn'); // Highlight current turn
@@ -106,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  messageArea.style.color = 'green';
              } else {
                  const currentPlayerInfo = state.players.find(p => p.id === state.currentPlayerId);
-                 messageArea.textContent = `Waiting for ${currentPlayerInfo?.email ?? 'opponent'}...`;
+                 messageArea.textContent = `Waiting for ${currentPlayerInfo?.firstName ?? 'opponent'}...`;
                   messageArea.style.color = '#555';
              }
          }
@@ -214,9 +218,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if(messageArea) {
                 messageArea.classList.add('game-over-message');
                 const winnerInfo = state.players.find(p => p.id === state.winnerId);
-                // Use state message to see who wins
-                messageArea.textContent = `${state.message ?? 'GAME OVER!'} ${winnerInfo ? 'Wins!' : ''}`;
-    
+                messageArea.textContent = `${state.message ?? 'GAME OVER!'} ${(winnerInfo?.firstName || winnerInfo?.email || '')} Wins!`;
+
+
                 // Show back to home button
                 if (!document.getElementById('back-to-home-btn')) {
                     const homeButton = document.createElement('button');
@@ -250,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     handDiv.classList.add('opponent-hand');
 
                     const label = document.createElement('div');
-                    label.textContent = `${player.email}'s Cards (${player.cardCount})`;
+                    label.textContent = `${player.firstName}'s Cards (${player.cardCount})`;
                     handDiv.appendChild(label);
 
                     const cardsDiv = document.createElement('div');

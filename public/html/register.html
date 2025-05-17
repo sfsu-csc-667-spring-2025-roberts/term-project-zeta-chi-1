@@ -15,6 +15,12 @@
         <div id="success-message" class="success"></div>
         <form id="register-form">
             <div>
+                <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+            </div>
+            <div>
+                <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+            </div>
+            <div>
                 <input type="email" id="email" name="email" placeholder="Email" required>
             </div>
             <div>
@@ -36,6 +42,8 @@
             errorMessage.textContent = '';
             successMessage.textContent = '';
 
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -43,7 +51,7 @@
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, password, firstName, lastName })
                 });
 
                 const data = await response.json();
