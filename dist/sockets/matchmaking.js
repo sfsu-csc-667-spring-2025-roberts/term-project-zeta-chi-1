@@ -46,7 +46,10 @@ function setupMatchmaking(io) {
             }
             else {
                 socket.emit('gameError', { message: 'Session expired or invalid. Cannot retrieve user info.' });
+
+
                 console.warn(`[Server Socket] Session mismatch or missing for requestMyInfo. Socket: ${socket.id}, 
+
                     Expected UserID: ${user.id}, Session User: ${(_a = currentSession === null || currentSession === void 0 ? void 0 : currentSession.user) === null || _a === void 0 ? void 0 : _a.id}`);
             }
         });

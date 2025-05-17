@@ -24,7 +24,18 @@
     <div class="container">
         <h1 id="title-h1"></h1>
 
-        <!-- User email display -->
+        <!-- user profile display -->
+
+        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
+            <strong>First Name: </strong>
+            <span id="user-first" style="font-weight: bold; color: #333;">Loading...</span>
+        </div>
+
+        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
+            <strong>Last Name: </strong>
+            <span id="user-last" style="font-weight: bold; color: #333;">Loading...</span>
+        </div>
+
         <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
             <strong>Account Email: </strong>
             <span id="user-email" style="font-weight: bold; color: #333;">Loading...</span>
@@ -41,8 +52,11 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const emailSpan = document.getElementById('user-email');
+            const userFirst = document.getElementById('user-first')
+            const userLast = document.getElementById('user-last')
 
-            async function fetchUserEmail() {
+
+            async function fetchUserProfile() {
                 if (!emailSpan) return;
 
                 try {
@@ -52,6 +66,10 @@
                         const data = await response.json();
                         if (data.user && data.user.email) {
                             emailSpan.textContent = data.user.email;
+                            userFirst.textContent = data.user.firstName;
+                            userLast.textContent = data.user.lastName;
+
+
                         } else {
                             emailSpan.textContent = 'Could not load email.';
                             console.warn('User data or email missing in response:', data);
@@ -68,7 +86,7 @@
                 }
             }
 
-            fetchUserEmail();
+            fetchUserProfile();
         });
      </script>
 </body>

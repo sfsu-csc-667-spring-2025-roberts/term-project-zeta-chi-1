@@ -16,7 +16,10 @@ export interface PlayerPublicInfo {
     id: string;
     email: string;
     cardCount: number;
+    firstName?: string;
+    lastName?: string;
 }
+
 
 // Full player state (server-side)
 export interface Player extends PlayerPublicInfo {
@@ -24,6 +27,8 @@ export interface Player extends PlayerPublicInfo {
     hand: Card[];
     hasCalledUno: boolean;
 }
+
+////// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 // Total game state (sent to clients)
 export interface GameState {

@@ -25,7 +25,7 @@ const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         res.status(400).json({ errors: errors.array() });
         return;
     }
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
     try {
         const userCheck = yield db_1.default.query('SELECT * FROM users WHERE email = $1', [email]);
         if (userCheck.rows.length > 0) {
@@ -33,7 +33,7 @@ const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             return;
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, SALT_ROUNDS);
-        const newUserResult = yield db_1.default.query('INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, wins, losses', [email, hashedPassword]);
+        const newUserResult = yield db_1.default.query('INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name, wins, losses', [email, hashedPassword, firstName, lastName]);
         const newUser = newUserResult.rows[0];
         res.status(201).json({ message: 'User registered successfully', user: newUser });
     }
@@ -67,6 +67,8 @@ const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
             email: user.email,
             wins: user.wins,
             losses: user.losses,
+            firstName: user.first_name,
+            lastName: user.last_name,
         };
         if (req.session) {
             req.session.user = userSessionData;
