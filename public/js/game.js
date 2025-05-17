@@ -537,4 +537,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    // ======== CHAT FEATURE ========
+    const chatBox = document.getElementById("chat-box");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+
+// Get username and use gameId as room
+    const username = sessionStorage.getItem("username") || prompt("Enter your name:");
+    sessionStorage.setItem("username", username);
+    sessionStorage.setItem("roomId", gameId); // Store room if not already
+
+    const room = sessionStorage.getItem("roomId");
+
+    if (room && username) {
+        socket.emit("joinRoom", { room, username });
+    }
+
+// Receive messages
+    socket.on("chatMessage", (msg) => {
+        if (chatBox) {
+            chatBox.innerHTML += `<p>${msg}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    });
+
+// Send messages
+    if (chatSend && chatInput) {
+        chatSend.addEventListener("click", () => {
+            const message = chatInput.value;
+            if (message.trim()) {
+                socket.emit("chatMessage", { room, username, message });
+                chatInput.value = "";
+            }
+        });
+    }
+
 })

@@ -51,6 +51,14 @@
         <div class="hand" id="player-hand">
             <!-- Player cards  here -->
         </div>
+        <!-- CHAT BOX -->
+        <div id="chat-container" style="margin-top: 30px;">
+            <h3>Chat</h3>
+            <div id="chat-box" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff;"></div>
+            <input type="text" id="chat-input" placeholder="Type a message..." />
+            <button id="chat-send">Send</button>
+        </div>
+
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
