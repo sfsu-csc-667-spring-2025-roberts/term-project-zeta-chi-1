@@ -115,15 +115,17 @@ button:disabled {
 
 #player-hand {
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
     justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 auto;
 }
 
 #player-hand .card {
     width: 60px;
     height: 90px;
-    font-size: 18px; /* Optional: scales down text to fit */
+    font-size: 18px;
 }
 
 .player-hand-container {
@@ -231,13 +233,13 @@ button:disabled {
 .button-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1px;
+    min-width: 10px;
 }
 
 .hand-and-buttons {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 20px; /* space between cards and buttons */
-    flex-wrap: wrap; /* allow wrapping on small screens */
+    align-items: center;
+    gap: -80px;
 }
