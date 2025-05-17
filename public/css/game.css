@@ -1,0 +1,122 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #002b5c;
+    color: white;
+    display: flex;
+    justify-content: center;     /* Centers horizontally */
+    align-items: center;         /* Centers vertically */
+    height: 100vh;               /* Full viewport height */
+}
+
+.game-container {
+    /* Add styling here if needed */
+}
+
+.center-board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin: 30px 0;
+}
+
+.pilee-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.draw-area {
+    margin-top: -20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.pile-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card {
+    width: 80px;
+    height: 120px;
+    border-radius: 10px;
+    position: relative;
+    background-color: white;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    margin: 5px;
+    font-weight: bold;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card.back {
+    background-image: url('../img/uno-back.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.deck-count {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #ff9800;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #f57c00;
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #333;
+    cursor: not-allowed;
+}
+
+.discard-pile {
+    position: relative;
+    width: 100px;
+    height: 150px;
+}
+
+#player-hand {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+#player-hand .card {
+    width: 60px;
+    height: 90px;
+    font-size: 18px; /* Optional: scales down text to fit */
+}

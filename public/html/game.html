@@ -1,64 +1,39 @@
-<!-- public/html/game.html --> 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNO Game</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/game.css" />
 </head>
 <body>
-    <div class="container game-board">
-        <h1 id="title-h1"></h1>
-        <div id="game-id-display">Game ID: Loading...</div>
+<div class="game-container">
 
-        <div class="players-area" id="players-area">
-            <!-- Player info here -->
+
+    <div class="center-board">
+        <div class="draw-area">
+            <div class="pile-label">Draw Pile</div>
+            <div class="card back"></div>
         </div>
 
-        <div class="center-area">
-
-            <!-- Draw Pile -->
-            <div class="draw-pile-info" id="draw-pile-info">
-                 <span style="font-weight: bold;">Cards Left: <span id="deck-count">?</span></span>
-                 <button id="draw-button" disabled style="margin-top: 10px;">Draw Card</button>
+        <div class="pilee-area">
+            <div class="pile-label">Discard Pile</div>
+            <div id="discard-pile" class="discard-pile">
+                <div id="top-card-display">(Empty)</div>
             </div>
-
-            <!-- Discard Pile -->
-            <div class="discard-pile" id="discard-pile">
-                 <div id="top-card-display">(Empty)</div>
-            </div>
-
-            <!-- UNO Action -->
-            <div class="actions">
-                <button id="uno-button" disabled>Call UNO!</button>
-            </div>
-        </div>
-
-
-        <div class="message-area" id="message-area">Waiting for game state...</div>
-
-        <div class="color-picker" id="color-picker" style="display: none;">
-            <p>Choose the next color:</p>
-            <button data-color="red" class="red"></button>
-            <button data-color="green" class="green"></button>
-            <button data-color="blue" class="blue"></button>
-            <button data-color="yellow" class="yellow"></button>
-        </div>
-
-        <h2 id="handh2">Your ✋🏼</h2>
-        <div class="hand" id="player-hand">
-            <!-- Player cards  here -->
         </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/game.js"></script>
 
-    <script>
-        const titleh1 = document.getElementById('title-h1');
-        titleh1.innerText = document.title;
-    </script>
+    <h2 id="handh2">Your ✋🏼</h2>
+    <div class="hand" id="player-hand">
+        <!-- Cards will be rendered here -->
+    </div>
+
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/game.js"></script>
 </body>
 </html>
