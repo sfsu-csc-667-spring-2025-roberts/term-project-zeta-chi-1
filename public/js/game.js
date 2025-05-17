@@ -572,38 +572,114 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // ======== CHAT FEATURE ========
-    const chatBox = document.getElementById("chat-box");
-    const chatInput = document.getElementById("chat-input");
-    const chatSend = document.getElementById("chat-send");
+//     const chatBox = document.getElementById("chat-box");
+//     const chatInput = document.getElementById("chat-input");
+//     const chatSend = document.getElementById("chat-send");
+//
+// // Get username and use gameId as room
+//     const username = sessionStorage.getItem("username") || prompt("Enter your name:");
+//     sessionStorage.setItem("username", username);
+//     sessionStorage.setItem("roomId", gameId); // Store room if not already
+//
+//     const room = sessionStorage.getItem("roomId");
+//
+//     if (room && username) {
+//         socket.emit("joinRoom", { room, username });
+//     }
+//
+// // Receive messages
+//     socket.on("chatMessage", (msg) => {
+//         if (chatBox) {
+//             chatBox.innerHTML += `<p>${msg}</p>`;
+//             chatBox.scrollTop = chatBox.scrollHeight;
+//         }
+//     });
+//
+// // Send messages
+//     if (chatSend && chatInput) {
+//         chatSend.addEventListener("click", () => {
+//             const message = chatInput.value;
+//             if (message.trim()) {
+//                 socket.emit("chatMessage", { room, username, message });
+//                 chatInput.value = "";
+//             }
+//         });
+//     }
 
-// Get username and use gameId as room
-    const username = sessionStorage.getItem("username") || prompt("Enter your name:");
-    sessionStorage.setItem("username", username);
-    sessionStorage.setItem("roomId", gameId); // Store room if not already
+        const chatIcon = document.getElementById('chat-icon');
+        const chatContainer = document.getElementById('chat-container');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
 
-    const room = sessionStorage.getItem("roomId");
-
-    if (room && username) {
-        socket.emit("joinRoom", { room, username });
-    }
-
-// Receive messages
-    socket.on("chatMessage", (msg) => {
-        if (chatBox) {
-            chatBox.innerHTML += `<p>${msg}</p>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    });
-
-// Send messages
-    if (chatSend && chatInput) {
-        chatSend.addEventListener("click", () => {
-            const message = chatInput.value;
-            if (message.trim()) {
-                socket.emit("chatMessage", { room, username, message });
-                chatInput.value = "";
+        // Toggle chat window
+        chatIcon.addEventListener('click', function() {
+            if (chatContainer.style.display === 'flex') {
+                chatContainer.style.display = 'none';
+            } else {
+                chatContainer.style.display = 'flex';
+                chatInput.focus();
             }
         });
-    }
+
+        // close chat window
+        closeChat.addEventListener('click', function() {
+            chatContainer.style.display = 'none';
+        });
+
+        // send message function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                // create message element
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message player-message';
+                messageElement.textContent = message;
+
+                // add to chat
+                chatMessages.appendChild(messageElement);
+
+                // clear input
+                chatInput.value = '';
+
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Here you would also send the message via socket.io
+                // socket.emit('chat message', message);
+
+                // Mock response (in a real app, this would come from socket.io)
+                setTimeout(() => {
+                    const responseElement = document.createElement('div');
+                    responseElement.className = 'message opponent-message';
+                    responseElement.textContent = "I'm thinking about my next move...";
+                    chatMessages.appendChild(responseElement);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        // send button click
+        sendButton.addEventListener('click', sendMessage);
+
+        // enter key press in input
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // for the web socket !! everything else is hard coded basically
+        /*
+        // Listen for chat messages
+        socket.on('chat message', function(data) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message opponent-message';
+            messageElement.textContent = data.message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+        */
 
 })
