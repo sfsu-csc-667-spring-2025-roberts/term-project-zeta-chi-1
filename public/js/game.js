@@ -92,7 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerDiv.id = `player-${player.id}`;
 
                 const name = player.firstName || player.email || 'Player';
-                playerDiv.textContent = `${name} (${player.cardCount} cards)`;
+                const nameText = `${name} (${player.cardCount} cards)`;
+
+                if (player.avatarData?.icon) {
+                    const avatarSpan = document.createElement('span');
+                    avatarSpan.textContent = `${player.avatarData.icon} `;
+                    playerDiv.appendChild(avatarSpan);
+                }
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = nameText;
+                playerDiv.appendChild(nameSpan);
 
 
      
@@ -670,16 +680,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // for the web socket !! everything else is hard coded basically
-        /*
-        // Listen for chat messages
-        socket.on('chat message', function(data) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message opponent-message';
-            messageElement.textContent = data.message;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-        */
+    const avatarDiv = document.getElementById('player-avatar');
 
-})
+    fetch('/api/auth/me')
+        .then(res => res.json())
+        .then(data => {
+            const avatarData = data.user?.avatarData;
+            if (!avatarData || typeof avatarData !== 'object') {
+                console.warn('No valid avatar data.');
+                return;
+            }
+
+            const parts = ['skin', 'clothes', 'eyes', 'head', 'mouth'];
+
+            parts.forEach(part => {
+                if (avatarData[part]) {
+                    const img = document.createElement('img');
+                    img.src = avatarData[part];
+                    img.alt = part;
+                    avatarDiv.appendChild(img);
+                }
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load avatar:', err);
+        });
+});

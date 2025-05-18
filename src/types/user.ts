@@ -7,6 +7,7 @@ export interface User {
     losses?: number;
     firstName: string;
     lastName: string;
+    avatarData: Record<string, any>;
 }
 
 export interface UserWithPassword extends User {
@@ -15,6 +16,7 @@ export interface UserWithPassword extends User {
     losses: number;
     first_name: string;
     last_name: string;
+    avatar_data: any;
 }
 
 // User is not a known property to sessionData fix
