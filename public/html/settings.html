@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNO Settings</title>
+    <title>Profile Settings</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -22,26 +22,31 @@
         </div>
     </header>
     <div class="container">
-        <h1 id="title-h1" style="color: white"></h1>
+
+        <div class="title-bar">
+            <a href="/home" class="back-arrow">←</a>
+            <h1 id="title-h1">Profile Settings</h1>
+        </div>
+
 
         <!-- user profile display -->
 
-        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
-            <strong>First Name: </strong>
-            <span id="user-first" style="font-weight: bold; color: #333;">Loading...</span>
+        <div class="profile-box">
+            <div class="profile-item">
+                <strong>First Name: </strong>
+                <span id="user-first">Loading...</span>
+            </div>
+            <div class="profile-item">
+                <strong>Last Name: </strong>
+                <span id="user-last">Loading...</span>
+            </div>
+            <div class="profile-item">
+                <strong>Account Email: </strong>
+                <span id="user-email">Loading...</span>
+            </div>
         </div>
 
-        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
-            <strong>Last Name: </strong>
-            <span id="user-last" style="font-weight: bold; color: #333;">Loading...</span>
-        </div>
 
-        <div style="margin-bottom: 20px; padding: 10px; background-color: #eee; border-radius: 4px;">
-            <strong>Account Email: </strong>
-            <span id="user-email" style="font-weight: bold; color: #333;">Loading...</span>
-        </div>
-
-        <p><a href="/home" style="text-decoration: none; color: white">Back to Home</a></p>
     </div>
 
      <script src="/js/home.js"></script>
