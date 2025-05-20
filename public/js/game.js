@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const colorPicker = document.getElementById('color-picker');
     const handh2 = document.getElementById('handh2');
 
+
     // Game State Vars
     let myPlayerId = null;
     let currentGameState = null;
@@ -89,7 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const playerDiv = document.createElement('div');
                 playerDiv.classList.add('player-info');
                 playerDiv.id = `player-${player.id}`;
-                playerDiv.textContent = `${player.email} (${player.cardCount} cards)`;
+
+                const name = player.firstName || player.email || 'Player';
+                playerDiv.textContent = `${name} (${player.cardCount} cards)`;
+
+
      
                 if (player.id === state.currentPlayerId && !state.isGameOver) {
                     playerDiv.classList.add('current-turn'); // Highlight current turn
@@ -105,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  messageArea.style.color = 'green';
              } else {
                  const currentPlayerInfo = state.players.find(p => p.id === state.currentPlayerId);
-                 messageArea.textContent = `Waiting for ${currentPlayerInfo?.email ?? 'opponent'}...`;
+                 messageArea.textContent = `Waiting for ${currentPlayerInfo?.firstName ?? 'opponent'}...`;
                   messageArea.style.color = '#555';
              }
          }
@@ -133,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 handh2.textContent = curr_email.concat("'s ✋🏼");
             }
         }
-    
+
         if (deckCountSpan) deckCountSpan.textContent = state.drawPileSize; // Renders the deck
     
         // Check if player has playable cards on their turn
@@ -213,9 +218,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if(messageArea) {
                 messageArea.classList.add('game-over-message');
                 const winnerInfo = state.players.find(p => p.id === state.winnerId);
-                // Use state message to see who wins
-                messageArea.textContent = `${state.message ?? 'GAME OVER!'} ${winnerInfo ? 'Wins!' : ''}`;
-    
+                messageArea.textContent = `${state.message ?? 'GAME OVER!'} ${(winnerInfo?.firstName || winnerInfo?.email || '')} Wins!`;
+
+
                 // Show back to home button
                 if (!document.getElementById('back-to-home-btn')) {
                     const homeButton = document.createElement('button');
@@ -238,6 +243,35 @@ document.addEventListener('DOMContentLoaded', () => {
              const existingHomeButton = document.getElementById('back-to-home-btn');
              if (existingHomeButton) existingHomeButton.remove();
         }
+
+        const otherPlayersHandsContainer = document.getElementById('other-players-hands');
+        if (otherPlayersHandsContainer) {
+            otherPlayersHandsContainer.innerHTML = ''; // Clear previous
+
+            state.players.forEach(player => {
+                if (player.id !== myPlayerId) {
+                    const handDiv = document.createElement('div');
+                    handDiv.classList.add('opponent-hand');
+
+                    const label = document.createElement('div');
+                    label.textContent = `${player.firstName}'s Cards (${player.cardCount})`;
+                    handDiv.appendChild(label);
+
+                    const cardsDiv = document.createElement('div');
+                    cardsDiv.classList.add('opponent-cards');
+
+                    for (let i = 0; i < player.cardCount; i++) {
+                        const cardBack = document.createElement('div');
+                        cardBack.classList.add('card-back');
+                        cardsDiv.appendChild(cardBack);
+                    }
+
+                    handDiv.appendChild(cardsDiv);
+                    otherPlayersHandsContainer.appendChild(handDiv);
+                }
+            });
+        }
+
     }
 
      function showTemporaryMessage(msg, type = 'info') {
@@ -538,38 +572,114 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // ======== CHAT FEATURE ========
-    const chatBox = document.getElementById("chat-box");
-    const chatInput = document.getElementById("chat-input");
-    const chatSend = document.getElementById("chat-send");
+//     const chatBox = document.getElementById("chat-box");
+//     const chatInput = document.getElementById("chat-input");
+//     const chatSend = document.getElementById("chat-send");
+//
+// // Get username and use gameId as room
+//     const username = sessionStorage.getItem("username") || prompt("Enter your name:");
+//     sessionStorage.setItem("username", username);
+//     sessionStorage.setItem("roomId", gameId); // Store room if not already
+//
+//     const room = sessionStorage.getItem("roomId");
+//
+//     if (room && username) {
+//         socket.emit("joinRoom", { room, username });
+//     }
+//
+// // Receive messages
+//     socket.on("chatMessage", (msg) => {
+//         if (chatBox) {
+//             chatBox.innerHTML += `<p>${msg}</p>`;
+//             chatBox.scrollTop = chatBox.scrollHeight;
+//         }
+//     });
+//
+// // Send messages
+//     if (chatSend && chatInput) {
+//         chatSend.addEventListener("click", () => {
+//             const message = chatInput.value;
+//             if (message.trim()) {
+//                 socket.emit("chatMessage", { room, username, message });
+//                 chatInput.value = "";
+//             }
+//         });
+//     }
 
-// Get username and use gameId as room
-    const username = sessionStorage.getItem("username") || prompt("Enter your name:");
-    sessionStorage.setItem("username", username);
-    sessionStorage.setItem("roomId", gameId); // Store room if not already
+        const chatIcon = document.getElementById('chat-icon');
+        const chatContainer = document.getElementById('chat-container');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
 
-    const room = sessionStorage.getItem("roomId");
-
-    if (room && username) {
-        socket.emit("joinRoom", { room, username });
-    }
-
-// Receive messages
-    socket.on("chatMessage", (msg) => {
-        if (chatBox) {
-            chatBox.innerHTML += `<p>${msg}</p>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    });
-
-// Send messages
-    if (chatSend && chatInput) {
-        chatSend.addEventListener("click", () => {
-            const message = chatInput.value;
-            if (message.trim()) {
-                socket.emit("chatMessage", { room, username, message });
-                chatInput.value = "";
+        // Toggle chat window
+        chatIcon.addEventListener('click', function() {
+            if (chatContainer.style.display === 'flex') {
+                chatContainer.style.display = 'none';
+            } else {
+                chatContainer.style.display = 'flex';
+                chatInput.focus();
             }
         });
-    }
+
+        // close chat window
+        closeChat.addEventListener('click', function() {
+            chatContainer.style.display = 'none';
+        });
+
+        // send message function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                // create message element
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message player-message';
+                messageElement.textContent = message;
+
+                // add to chat
+                chatMessages.appendChild(messageElement);
+
+                // clear input
+                chatInput.value = '';
+
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Here you would also send the message via socket.io
+                // socket.emit('chat message', message);
+
+                // Mock response (in a real app, this would come from socket.io)
+                setTimeout(() => {
+                    const responseElement = document.createElement('div');
+                    responseElement.className = 'message opponent-message';
+                    responseElement.textContent = "I'm thinking about my next move...";
+                    chatMessages.appendChild(responseElement);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        // send button click
+        sendButton.addEventListener('click', sendMessage);
+
+        // enter key press in input
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // for the web socket !! everything else is hard coded basically
+        /*
+        // Listen for chat messages
+        socket.on('chat message', function(data) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message opponent-message';
+            messageElement.textContent = data.message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+        */
 
 })

@@ -5,12 +5,16 @@ export interface User {
     email: string;
     wins?: number; // Tracks current player W/L
     losses?: number;
+    firstName: string;
+    lastName: string;
 }
 
 export interface UserWithPassword extends User {
     password_hash: string;
     wins: number;
     losses: number;
+    first_name: string;
+    last_name: string;
 }
 
 // User is not a known property to sessionData fix

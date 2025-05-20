@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Register</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
     <div class="container">
@@ -15,14 +15,26 @@
         <div id="success-message" class="success"></div>
         <form id="register-form">
             <div>
+                <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+            </div>
+            <div>
+                <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+            </div>
+            <div>
                 <input type="email" id="email" name="email" placeholder="Email" required>
             </div>
             <div>
                 <input type="password" id="password" name="password" placeholder="Password (min 5 chars)" minlength="5" required>
             </div>
-            <button type="submit">Register</button>
+            <div class="centered">
+                <button type="submit">Register</button>
+            </div>
         </form>
-        <p>Already have an account? <a href="/index">Login here</a></p>
+
+        <div class="centered">
+            <p style="font-size: 12px">Already have an account? <a href="/index" style="text-decoration: none; color: #007bff; font-size: 12px">Login here</a></p>
+        </div>
+
     </div>
      <script>
         const form = document.getElementById('register-form');
@@ -36,6 +48,8 @@
             errorMessage.textContent = '';
             successMessage.textContent = '';
 
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -43,7 +57,7 @@
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, password, firstName, lastName })
                 });
 
                 const data = await response.json();

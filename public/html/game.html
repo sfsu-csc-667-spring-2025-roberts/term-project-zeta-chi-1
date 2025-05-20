@@ -1,72 +1,97 @@
-<!-- public/html/game.html --> 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNO Game</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/game.css" />
 </head>
 <body>
-    <div class="container game-board">
-        <h1 id="title-h1"></h1>
-        <div id="game-id-display">Game ID: Loading...</div>
+<div class="game-container">
 
-        <div class="players-area" id="players-area">
-            <!-- Player info here -->
+    <div id="other-players-hands" >
+        <!-- Opponents' hands will be rendered here -->
+    </div>
+
+
+
+    <div class="center-board">
+        <div class="draw-area">
+            <div class="pile-label">Draw Pile</div>
+            <div class="card back"></div>
         </div>
 
-        <div class="center-area">
-
-            <!-- Draw Pile -->
-            <div class="draw-pile-info" id="draw-pile-info">
-                 <span style="font-weight: bold;">Cards Left: <span id="deck-count">?</span></span>
-                 <button id="draw-button" disabled style="margin-top: 10px;">Draw Card</button>
-            </div>
-
-            <!-- Discard Pile -->
-            <div class="discard-pile" id="discard-pile">
-                 <div id="top-card-display">(Empty)</div>
-            </div>
-
-            <!-- UNO Action -->
-            <div class="actions">
-                <button id="uno-button" disabled>Call UNO!</button>
+        <div class="pilee-area">
+            <div class="pile-label">Discard Pile</div>
+            <div id="discard-pile" class="discard-pile">
+                <div id="top-card-display">(Empty)</div>
             </div>
         </div>
+    </div>
 
 
-        <div class="message-area" id="message-area">Waiting for game state...</div>
 
-        <div class="color-picker" id="color-picker" style="display: none;">
-            <p>Choose the next color:</p>
+    <div class="color-picker" id="color-picker" style="display: none;">
             <button data-color="red" class="red"></button>
             <button data-color="green" class="green"></button>
             <button data-color="blue" class="blue"></button>
             <button data-color="yellow" class="yellow"></button>
         </div>
 
-        <h2 id="handh2">Your ✋🏼</h2>
-        <div class="hand" id="player-hand">
-            <!-- Player cards  here -->
+    <div class="player-hand-container">
+        <div class="message-area" id="message-area">Waiting for game state...</div>
+
+        <div class="hand-and-buttons">
+            <div class="hand" id="player-hand">
+                <!-- Cards go here -->
+            </div>
+            <div class="button-group">
+                <button id="draw-button" disabled>Draw Card</button>
+                <button id="uno-button" disabled>Call UNO!</button>
+            </div>
         </div>
-        <!-- CHAT BOX -->
-        <div id="chat-container" style="margin-top: 30px;">
-            <h3>Chat</h3>
-            <div id="chat-box" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff;"></div>
-            <input type="text" id="chat-input" placeholder="Type a message..." />
-            <button id="chat-send">Send</button>
+
+
+        <div class="chat-icon" id="chat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20,2H4C2.9,2,2,2.9,2,4v18l4-4h14c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z M20,16H6l-2,2V4h16V16z"/>
+                <path d="M7,9h10v2H7V9z M7,12h7v2H7V12z M7,6h10v2H7V6z"/>
+            </svg>
         </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chat-container">
+            <div class="chat-header">
+                <span>Game Chat</span>
+                <span class="close-chat" id="close-chat">&times;</span>
+            </div>
+            <div class="chat-messages-container">
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages will appear here -->
+                    <div class="message opponent-message">Welcome to UNO chat!</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Type a message...">
+                    <button class="send-button" id="send-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            </div>
+
+
+        <div id="game-id-display" class="gameID">Game ID: Loading...</div>
 
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/game.js"></script>
 
-    <script>
-        const titleh1 = document.getElementById('title-h1');
-        titleh1.innerText = document.title;
-    </script>
+
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/game.js"></script>
 </body>
 </html>

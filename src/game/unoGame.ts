@@ -25,6 +25,8 @@ export class UnoGame {
         this.players = playerUsers.map(p => ({
             id: p.user.id,
             email: p.user.email,
+            firstName: p.user.firstName,
+            lastName: p.user.lastName,
             socketId: p.socketId,
             hand: [],
             cardCount: 0, // default
@@ -195,6 +197,7 @@ export class UnoGame {
         return this.players.map(p => ({
             id: p.id,
             email: p.email,
+            firstName: p.firstName ?? undefined,
             cardCount: p.hand.length,
         }));
     }

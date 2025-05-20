@@ -16,7 +16,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     return;
   }
 
-  const { email, password } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
   try {
     const userCheck = await pool.query<UserWithPassword>('SELECT * FROM users WHERE email = $1', [email]);
@@ -27,8 +27,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
     const newUserResult = await pool.query<User>(
-      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, wins, losses',
-      [email, hashedPassword]
+        'INSERT INTO users (email, password_hash, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name, wins, losses',
+      [email, hashedPassword, firstName, lastName]
     );
     const newUser = newUserResult.rows[0];
 
@@ -70,7 +70,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             email: user.email,
             wins: user.wins,
             losses: user.losses,
+            firstName: user.first_name,
+            lastName: user.last_name,
         };
+
         if (req.session) {
             req.session.user = userSessionData;
         }
