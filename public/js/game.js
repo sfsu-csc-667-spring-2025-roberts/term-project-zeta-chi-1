@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let myPlayerId = null;
     let currentGameState = null;
     let gameId = null;
-    let cardToPlayAfterColorChoice = null; // Stores card if wild needs a color
+    let cardToPlayAfterColorChoice = null; // stores card if wild needs a color
     let isMyTurn = false;
     let hasSentReady = false;
 
@@ -453,7 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('playerDisconnected', (data) => {
          console.warn('Player Disconnected:', data.email);
-         // Disconnect is handled by server
     });
 
     socket.on('disconnect', (reason) => {
@@ -527,13 +526,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Draw button
+    // draw button
     if (drawButton) {
         drawButton.addEventListener('click', () => {
             if (drawButton.disabled || !gameId || !isMyTurn) return;
             console.log("Attempting to draw card");
 
-            // Disable actions
             drawButton.disabled = true;
             unoButton.disabled = true;
             playerHandElement.querySelectorAll('.card').forEach(c => c.classList.add('disabled'));
@@ -543,15 +541,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Uno button
+    // uno button
     if (unoButton) {
         unoButton.addEventListener('click', () => {
             if (unoButton.disabled || !gameId || !isMyTurn) return;
             console.log("Calling UNO!");
             socket.emit('callUno', { gameId });
-            // Disable button temporarily after clicking to prevent spam
             unoButton.disabled = true;
-            setTimeout(() => { // Enable button again based on next game state if still relevant
+            setTimeout(() => { // enable button again based on next game state if still relevant
                  if (isMyTurn && currentGameState && currentGameState.yourHand && currentGameState.yourHand.length <= 2) {
                      unoButton.disabled = false;
                  }
@@ -559,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Color Picker buttons
+    // color picker buttons
     if (colorPicker) {
         colorPicker.addEventListener('click', (event) => {
             const targetButton = event.target.closest('button');
@@ -581,128 +578,139 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ======== CHAT FEATURE ========
-//     const chatBox = document.getElementById("chat-box");
-//     const chatInput = document.getElementById("chat-input");
-//     const chatSend = document.getElementById("chat-send");
-//
-// // Get username and use gameId as room
-//     const username = sessionStorage.getItem("username") || prompt("Enter your name:");
-//     sessionStorage.setItem("username", username);
-//     sessionStorage.setItem("roomId", gameId); // Store room if not already
-//
-//     const room = sessionStorage.getItem("roomId");
-//
-//     if (room && username) {
-//         socket.emit("joinRoom", { room, username });
-//     }
-//
-// // Receive messages
-//     socket.on("chatMessage", (msg) => {
-//         if (chatBox) {
-//             chatBox.innerHTML += `<p>${msg}</p>`;
-//             chatBox.scrollTop = chatBox.scrollHeight;
-//         }
-//     });
-//
-// // Send messages
-//     if (chatSend && chatInput) {
-//         chatSend.addEventListener("click", () => {
-//             const message = chatInput.value;
-//             if (message.trim()) {
-//                 socket.emit("chatMessage", { room, username, message });
-//                 chatInput.value = "";
-//             }
-//         });
-//     }
 
-        const chatIcon = document.getElementById('chat-icon');
-        const chatContainer = document.getElementById('chat-container');
-        const closeChat = document.getElementById('close-chat');
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
-        const chatMessages = document.getElementById('chat-messages');
 
-        // Toggle chat window
-        chatIcon.addEventListener('click', function() {
-            if (chatContainer.style.display === 'flex') {
-                chatContainer.style.display = 'none';
-            } else {
-                chatContainer.style.display = 'flex';
-                chatInput.focus();
+
+    // ==== CHAT FEATURE  ====
+    const chatIcon = document.getElementById('chat-icon');
+    const chatContainer = document.getElementById('chat-container');
+    const closeChat = document.getElementById('close-chat');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+    const chatMessages = document.getElementById('chat-messages');
+
+    let username = '';
+    let room = '';
+
+
+    function updateChatUsername() {
+        if (currentGameState && myPlayerId) {
+            const currentPlayer = currentGameState.players.find(player => player.id === myPlayerId);
+            if (currentPlayer) {
+
+                username = currentPlayer.firstName || currentPlayer.email || 'Player';
+
+
+                sessionStorage.setItem("username", username);
+
+
+                sessionStorage.setItem("roomId", gameId);
+                room = gameId;
+
+
+                if (room && username && socket.connected) {
+                    socket.emit("joinRoom", { room, username });
+                }
             }
-        });
+        }
+    }
 
-        // close chat window
-        closeChat.addEventListener('click', function() {
+
+    socket.on('gameState', (state) => {
+        console.log(`[Game Client] Received gameState for GameID=${state?.gameId}`);
+        if (state && state.gameId === gameId) { // Safety check for gameId match
+            updateUI(state);
+            updateChatUsername();
+        } else if (state) {
+            console.warn(`Received gameState for wrong game? Expected ${gameId}, Got ${state.gameId}`);
+        }
+    });
+
+
+    socket.on('myInfo', (data) => {
+        console.log(`[Game Client] Received myInfo: UserID=${data.userId}`);
+        myPlayerId = data.userId;
+        if (gameId && !hasSentReady) {
+            console.log(`[Game Client] Emitting playerReadyForGame for GameID=${gameId}, UserID=${myPlayerId}`);
+            socket.emit('playerReadyForGame', { gameId });
+            hasSentReady = true;
+        } else {
+            console.warn(`[Game Client] Did not emit playerReadyForGame. gameId=${gameId}, hasSentReady=${hasSentReady}`);
+        }
+
+        if (currentGameState) {
+            console.log('[Game Client] Re-rendering UI after receiving myInfo');
+            updateUI(currentGameState);
+            updateChatUsername();
+        }
+    });
+
+    chatIcon.addEventListener('click', function () {
+        if (chatContainer.style.display === 'flex') {
             chatContainer.style.display = 'none';
-        });
+        } else {
+            chatContainer.style.display = 'flex';
+            chatInput.focus();
+        }
+    });
 
-        // send message function
-        function sendMessage() {
-            const message = chatInput.value.trim();
-            if (message) {
-                // create message element
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message player-message';
+    closeChat.addEventListener('click', function () {
+        chatContainer.style.display = 'none';
+    });
+
+// Send a message
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message) {
+            // Append local message
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message player-message';
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            //emitting
+            socket.emit("chatMessage", { room, username, message });
+
+            // clearing
+            chatInput.value = '';
+        }
+    }
+
+// sending chat
+    sendButton.addEventListener('click', sendMessage);
+
+// enter key so we can send message
+    chatInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+// listening for other user messages
+    socket.on("chatMessage", (data) => {
+        // removing echo messages, checking if it is our code or not
+        if (typeof data === 'object' && data.username === username) {
+            // return nothing if the message is ours
+            return;
+        }
+
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message opponent-message';
+
+        if (typeof data === 'string') {
+            messageElement.textContent = data;
+        } else {
+            const { username, message } = data;
+
+            if (username && message) {
+                messageElement.textContent = `${username}: ${message}`;
+            } else if (message) {
                 messageElement.textContent = message;
-
-                // add to chat
-                chatMessages.appendChild(messageElement);
-
-                // clear input
-                chatInput.value = '';
-
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                // Here you would also send the message via socket.io
-                // socket.emit('chat message', message);
-
-                // Mock response (in a real app, this would come from socket.io)
-                setTimeout(() => {
-                    const responseElement = document.createElement('div');
-                    responseElement.className = 'message opponent-message';
-                    responseElement.textContent = "I'm thinking about my next move...";
-                    chatMessages.appendChild(responseElement);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 1000);
             }
         }
 
-        // send button click
-        sendButton.addEventListener('click', sendMessage);
-
-        // enter key press in input
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-    const avatarDiv = document.getElementById('player-avatar');
-
-    fetch('/api/auth/me')
-        .then(res => res.json())
-        .then(data => {
-            const avatarData = data.user?.avatarData;
-            if (!avatarData || typeof avatarData !== 'object') {
-                console.warn('No valid avatar data.');
-                return;
-            }
-
-            const parts = ['skin', 'clothes', 'eyes', 'head', 'mouth'];
-
-            parts.forEach(part => {
-                if (avatarData[part]) {
-                    const img = document.createElement('img');
-                    img.src = avatarData[part];
-                    img.alt = part;
-                    avatarDiv.appendChild(img);
-                }
-            });
-        })
-        .catch(err => {
-            console.error('Failed to load avatar:', err);
-        });
-});
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+    })

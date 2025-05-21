@@ -5,29 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a70c15ad-6a10-49cf-b4ae-5a0636d7fdc8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/avatar/clothes/flannel.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/clothes/hoodie.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/clothes/shirt.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/clothes/smile.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/mouth/happy-mouth.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/skins/skin2.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/skins/skin3.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/skins/skin4.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/avatar/skins/skin5.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/css/avatarCreation.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/html/avatarCreation.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/js/avatar.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/css/game.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/game.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/html/game.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/html/game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/html/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/html/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/html/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/html/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/authController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/authController.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/game/unoGame.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/unoGame.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sockets/chat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/sockets/chat.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
