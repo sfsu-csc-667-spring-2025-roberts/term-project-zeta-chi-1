@@ -3,10 +3,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[Game Client] DOMContentLoaded');
 
-    let username;
-    let room;
-
-
     const socket = io({ // Connect to the server, enable auto-reconnect
         reconnection: true,
         reconnectionAttempts: 5,
@@ -34,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let myPlayerId = null;
     let currentGameState = null;
     let gameId = null;
-    let cardToPlayAfterColorChoice = null; // Stores card if wild needs a color
+    let cardToPlayAfterColorChoice = null; // stores card if wild needs a color
     let isMyTurn = false;
     let hasSentReady = false;
 
@@ -96,7 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 playerDiv.id = `player-${player.id}`;
 
                 const name = player.firstName || player.email || 'Player';
-                playerDiv.textContent = `${name} (${player.cardCount} cards)`;
+                const nameText = `${name} (${player.cardCount} cards)`;
+
+                if (player.avatarData?.icon) {
+                    const avatarSpan = document.createElement('span');
+                    avatarSpan.textContent = `${player.avatarData.icon} `;
+                    playerDiv.appendChild(avatarSpan);
+                }
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = nameText;
+                playerDiv.appendChild(nameSpan);
 
 
      
@@ -447,7 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     socket.on('playerDisconnected', (data) => {
          console.warn('Player Disconnected:', data.email);
-         // Disconnect is handled by server
     });
 
     socket.on('disconnect', (reason) => {
@@ -521,13 +526,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Draw button
+    // draw button
     if (drawButton) {
         drawButton.addEventListener('click', () => {
             if (drawButton.disabled || !gameId || !isMyTurn) return;
             console.log("Attempting to draw card");
 
-            // Disable actions
             drawButton.disabled = true;
             unoButton.disabled = true;
             playerHandElement.querySelectorAll('.card').forEach(c => c.classList.add('disabled'));
@@ -537,15 +541,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Uno button
+    // uno button
     if (unoButton) {
         unoButton.addEventListener('click', () => {
             if (unoButton.disabled || !gameId || !isMyTurn) return;
             console.log("Calling UNO!");
             socket.emit('callUno', { gameId });
-            // Disable button temporarily after clicking to prevent spam
             unoButton.disabled = true;
-            setTimeout(() => { // Enable button again based on next game state if still relevant
+            setTimeout(() => { // enable button again based on next game state if still relevant
                  if (isMyTurn && currentGameState && currentGameState.yourHand && currentGameState.yourHand.length <= 2) {
                      unoButton.disabled = false;
                  }
@@ -553,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Color Picker buttons
+    // color picker buttons
     if (colorPicker) {
         colorPicker.addEventListener('click', (event) => {
             const targetButton = event.target.closest('button');
@@ -576,8 +579,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ==== CHAT FEATURE  ====
 
+
+    // ==== CHAT FEATURE  ====
     const chatIcon = document.getElementById('chat-icon');
     const chatContainer = document.getElementById('chat-container');
     const closeChat = document.getElementById('close-chat');
@@ -585,21 +589,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('send-button');
     const chatMessages = document.getElementById('chat-messages');
 
-// Get username and room
-    username = sessionStorage.getItem("username");
-    if (!username || username === "null") {
-        username = prompt("Enter your name:") || "Guest";
-        sessionStorage.setItem("username", username);
-    }
-    sessionStorage.setItem("roomId", gameId); // Use gameId as room ID
-    room = sessionStorage.getItem("roomId");
+    let username = '';
+    let room = '';
 
-// Join the chat room when connected
-    if (room && username) {
-        socket.emit("joinRoom", { room, username });
+
+    function updateChatUsername() {
+        if (currentGameState && myPlayerId) {
+            const currentPlayer = currentGameState.players.find(player => player.id === myPlayerId);
+            if (currentPlayer) {
+
+                username = currentPlayer.firstName || currentPlayer.email || 'Player';
+
+
+                sessionStorage.setItem("username", username);
+
+
+                sessionStorage.setItem("roomId", gameId);
+                room = gameId;
+
+
+                if (room && username && socket.connected) {
+                    socket.emit("joinRoom", { room, username });
+                }
+            }
+        }
     }
 
-// Toggle chat window
+
+    socket.on('gameState', (state) => {
+        console.log(`[Game Client] Received gameState for GameID=${state?.gameId}`);
+        if (state && state.gameId === gameId) { // Safety check for gameId match
+            updateUI(state);
+            updateChatUsername();
+        } else if (state) {
+            console.warn(`Received gameState for wrong game? Expected ${gameId}, Got ${state.gameId}`);
+        }
+    });
+
+
+    socket.on('myInfo', (data) => {
+        console.log(`[Game Client] Received myInfo: UserID=${data.userId}`);
+        myPlayerId = data.userId;
+        if (gameId && !hasSentReady) {
+            console.log(`[Game Client] Emitting playerReadyForGame for GameID=${gameId}, UserID=${myPlayerId}`);
+            socket.emit('playerReadyForGame', { gameId });
+            hasSentReady = true;
+        } else {
+            console.warn(`[Game Client] Did not emit playerReadyForGame. gameId=${gameId}, hasSentReady=${hasSentReady}`);
+        }
+
+        if (currentGameState) {
+            console.log('[Game Client] Re-rendering UI after receiving myInfo');
+            updateUI(currentGameState);
+            updateChatUsername();
+        }
+    });
+
     chatIcon.addEventListener('click', function () {
         if (chatContainer.style.display === 'flex') {
             chatContainer.style.display = 'none';
@@ -609,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-// Close chat window
     closeChat.addEventListener('click', function () {
         chatContainer.style.display = 'none';
     });
@@ -625,26 +669,32 @@ document.addEventListener('DOMContentLoaded', () => {
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Emit to server
+            //emitting
             socket.emit("chatMessage", { room, username, message });
 
-            // Clear input
+            // clearing
             chatInput.value = '';
         }
     }
 
-// Click to send
+// sending chat
     sendButton.addEventListener('click', sendMessage);
 
-// Enter key to send
+// enter key so we can send message
     chatInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             sendMessage();
         }
     });
 
-// Listen for chat messages from other players
+// listening for other user messages
     socket.on("chatMessage", (data) => {
+        // removing echo messages, checking if it is our code or not
+        if (typeof data === 'object' && data.username === username) {
+            // return nothing if the message is ours
+            return;
+        }
+
         const messageElement = document.createElement('div');
         messageElement.className = 'message opponent-message';
 
@@ -656,7 +706,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (username && message) {
                 messageElement.textContent = `${username}: ${message}`;
             } else if (message) {
-                // Just display the message (e.g. "Alex joined the game.")
                 messageElement.textContent = message;
             }
         }
@@ -664,6 +713,4 @@ document.addEventListener('DOMContentLoaded', () => {
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     });
-
-
-})
+    })
