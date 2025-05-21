@@ -78,6 +78,50 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const res = await fetch('/api/auth/me'); // Or your current user endpoint
+            if (!res.ok) return;
+
+            const data = await res.json();
+            const avatarData = data.user?.avatarData;
+
+            if (!avatarData) return;
+
+            const accountIcon = document.getElementById('account-icon');
+            accountIcon.textContent = ''; // Clear the 👤 emoji
+
+            // Create a small circular avatar container
+            const avatarContainer = document.createElement('div');
+            avatarContainer.style.position = 'relative';
+            avatarContainer.style.width = '40px';
+            avatarContainer.style.height = '40px';
+            avatarContainer.style.borderRadius = '50%';
+            avatarContainer.style.overflow = 'hidden';
+            avatarContainer.style.background = '#fff';
+
+            // Add each image layer (skin, clothes, eyes, etc.)
+            for (const part of ['skin', 'clothes', 'eyes', 'head', 'mouth']) {
+                const img = document.createElement('img');
+                img.src = avatarData[part];
+                img.style.position = 'absolute';
+                img.style.top = '0';
+                img.style.left = '0';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'contain';
+                avatarContainer.appendChild(img);
+            }
+
+            accountIcon.appendChild(avatarContainer);
+        } catch (err) {
+            console.error('Failed to load avatar:', err);
+        }
+    });
+</script>
+
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/home.js"></script>
 </body>

@@ -21,22 +21,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/public/img",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "fileTemplates",
-    "ts.external.directory.path": "/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;UI-design&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/public/avatar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;fileTemplates&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/nicolascarrillo/Desktop/term-project-zeta-chi-1/node_modules/typescript/lib&quot;
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/avatar" />
       <recent name="$PROJECT_DIR$/public/img" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/avatar/head" />
+      <recent name="$PROJECT_DIR$/public/avatar" />
+      <recent name="$PROJECT_DIR$/public/avatar/mouth" />
+      <recent name="$PROJECT_DIR$/public/avatar/clothes" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -61,6 +68,7 @@
       <workItem from="1747451821639" duration="13556000" />
       <workItem from="1747467620511" duration="832000" />
       <workItem from="1747506441101" duration="5522000" />
+      <workItem from="1747545404869" duration="8435000" />
     </task>
     <servers />
   </component>

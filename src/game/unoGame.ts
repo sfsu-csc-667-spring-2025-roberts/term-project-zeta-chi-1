@@ -199,6 +199,7 @@ export class UnoGame {
             email: p.email,
             firstName: p.firstName ?? undefined,
             cardCount: p.hand.length,
+            avatarData: p.avatarData,
         }));
     }
 

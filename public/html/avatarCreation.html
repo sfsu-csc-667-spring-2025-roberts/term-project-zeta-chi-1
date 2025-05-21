@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Avatar Creator</title>
+    <link rel="stylesheet" href="/css/avatarCreation.css">
+</head>
+<body>
+<div class="creator-box">
+    <h1>Create Your Avatar</h1>
+    <p class="instruction">Complete your registration by creating your avatar</p>
+
+    <div>
+
+        <div class="arrow-container">
+            <button class="arrow-btn" onclick="prevOption()">◀</button>
+
+            <div class="avatar-circle">
+                <img id="skin-layer" alt="skin">
+                <img id="clothes-layer" style="display:none;" alt="clothes">
+                <img id="eyes-layer" style="display:none;" alt="eyes">
+                <img id="head-layer" style="display:none;" alt="head">
+                <img id="mouth-layer" style="display:none;" alt="mouth">
+            </div>
+
+            <button class="arrow-btn" onclick="nextOption()">▶</button>
+        </div>
+
+    </div>
+
+
+    <p id="category-label">Skin</p>
+    <button class="confirm-btn" onclick="confirmCategory()">Select</button>
+
+    <div id="status-message" style="display: none; margin-top: 15px; padding: 10px; text-align: center;"></div>
+
+    <div class="user-info-box">
+        <h2>Registration Info</h2>
+        <p><strong>First Name:</strong> <span id="info-first"></span></p>
+        <p><strong>Last Name:</strong> <span id="info-last"></span></p>
+        <p><strong>Email:</strong> <span id="info-email"></span></p>
+    </div>
+</div>
+<script src="/js/avatar.js"></script>
+
+
+</body>
+</html>

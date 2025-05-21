@@ -18,6 +18,8 @@ export interface PlayerPublicInfo {
     cardCount: number;
     firstName?: string;
     lastName?: string;
+    avatarData?: Record<string, any>;
+
 }
 
 
@@ -26,6 +28,8 @@ export interface Player extends PlayerPublicInfo {
     socketId: string;
     hand: Card[];
     hasCalledUno: boolean;
+    avatarData?: Record<string, any>;
+
 }
 
 ////// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
