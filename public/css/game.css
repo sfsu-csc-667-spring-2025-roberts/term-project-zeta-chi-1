@@ -11,6 +11,9 @@ body {
     align-items: center;
 }
 
+/*_____________________________________________________________________________________________*/
+/*MAIN GAME BOARD DESIGN*/
+
 .game-container {
     flex: 1;
     display: flex;
@@ -48,38 +51,6 @@ body {
     margin-bottom: 5px;
 }
 
-.card {
-    width: 80px;
-    height: 120px;
-    border-radius: 10px;
-    position: relative;
-    background-color: white;
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
-    margin: 5px;
-    font-weight: bold;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-}
-
-.card.back {
-    background-image: url('../img/uno-back.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 80px;
-    height: 120px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
 
 .deck-count {
     margin-top: 5px;
@@ -113,6 +84,137 @@ button:disabled {
     height: 150px;
 }
 
+
+/*_____________________________________________________________________________________________*/
+/*CARDS DESIGN*/
+
+
+.card {
+    width: 80px;
+    height: 120px;
+    border-radius: 10px;
+    position: relative;
+    background-color: white;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    margin: 5px;
+    font-weight: bold;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card.back {
+    background-image: url('../img/uno-back.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 80px;
+    height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.card::before {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 16px;
+}
+
+.card::after {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 16px;
+    transform: rotate(180deg);
+}
+
+.card.number::before, .card.number::after {
+    content: attr(data-value);
+}
+
+.card.skip::before, .card.skip::after {
+    content: "⊘";
+}
+
+.card.reverse::before, .card.reverse::after {
+    content: "⟲";
+}
+
+.card.draw-two::before, .card.draw-two::after {
+    content: "+2";
+}
+
+.card.wild-draw-four::before, .card.wild-draw-four::after {
+    content: "+4";
+}
+
+.card.wild-color::before, .card.wild-color::after {
+    content: "★";
+}
+
+.card.red { background-color: #e53935; color: white; }
+.card.green { background-color: #43a047; color: white; }
+.card.blue { background-color: #1e88e5; color: white; }
+.card.yellow { background-color: #fdd835; color: black; }
+.card.wild {
+    background: linear-gradient(45deg,
+    #e53935 0%, #e53935 25%,
+    #43a047 25%, #43a047 50%,
+    #1e88e5 50%, #1e88e5 75%,
+    #fdd835 75%, #fdd835 100%);
+    color: white;
+}
+
+.card:hover {
+     transform: translateY(-10px);
+ }
+
+
+/*_____________________________________________________________________________________________*/
+/*GAME ID DESIGN*/
+.gameID {
+    font-size: 10px;
+}
+
+
+/*_____________________________________________________________________________________________*/
+/*COLOR PICKER*/
+
+.color-picker {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 8rem;
+}
+
+.color-picker button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+.color-picker .red { background-color: #e53935; }
+.color-picker .green { background-color: #43a047; }
+.color-picker .blue { background-color: #1e88e5; }
+.color-picker .yellow { background-color: #fdd835; }
+
+
+
+/*_____________________________________________________________________________________________*/
+/*PLAYER HAND CONTAINER */
+
 #player-hand {
     display: flex;
     justify-content: center;
@@ -139,97 +241,6 @@ button:disabled {
     align-items: center;
 }
 
-.card::before {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    font-size: 16px;
-}
-
-.card::after {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: 16px;
-    transform: rotate(180deg);
-}
-
-
-.card.number::before, .card.number::after {
-    content: attr(data-value);
-}
-
-.card.skip::before, .card.skip::after {
-    content: "⊘";
-}
-
-.card.reverse::before, .card.reverse::after {
-    content: "⟲";
-}
-
-.card.draw-two::before, .card.draw-two::after {
-    content: "+2";
-}
-
-.card.wild-draw-four::before, .card.wild-draw-four::after {
-    content: "+4";
-}
-
-.card.wild-color::before, .card.wild-color::after {
-    content: "★";
-}
-
-
-.card.red { background-color: #e53935; color: white; }
-.card.green { background-color: #43a047; color: white; }
-.card.blue { background-color: #1e88e5; color: white; }
-.card.yellow { background-color: #fdd835; color: black; }
-.card.wild {
-    background: linear-gradient(45deg,
-    #e53935 0%, #e53935 25%,
-    #43a047 25%, #43a047 50%,
-    #1e88e5 50%, #1e88e5 75%,
-    #fdd835 75%, #fdd835 100%);
-    color: white;
-}
-
-.card:hover {
-     transform: translateY(-10px);
- }
-
-.gameID {
-    font-size: 10px;
-}
-
-.color-picker {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 8rem;
-}
-
-.color-picker button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    outline: none;
-    border: none;
-    cursor: pointer;
-}
-
-
-.color-picker .red { background-color: #e53935; }
-.color-picker .green { background-color: #43a047; }
-.color-picker .blue { background-color: #1e88e5; }
-.color-picker .yellow { background-color: #fdd835; }
-
-
-.message-area {
-    margin-bottom: 15px;
-    color: white;
-}
-
-
 .button-group {
     display: flex;
     flex-direction: column;
@@ -247,6 +258,10 @@ button:disabled {
     margin-bottom: 10px;
 }
 
+
+/*_____________________________________________________________________________________________*/
+/*Player Avatar*/
+
 .player-avatar {
     width: 150px;
     height: 150px;
@@ -260,7 +275,8 @@ button:disabled {
 }
 
 
-
+/*_____________________________________________________________________________________________*/
+/*OPPONENTS CARDS*/
 
 #other-players-hands {
     display: flex;
@@ -293,44 +309,8 @@ button:disabled {
 }
 
 
-
-
-
-
-
-
-.chat-icon {
-    position: fixed;
-    right: 30px;
-    bottom: 30px;
-    width: 60px;
-    height: 60px;
-    background-color: #ff9800;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 100;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.chat-icon:hover {
-    transform: scale(1.1);
-    background-color: #f57c00;
-}
-
-.chat-icon svg {
-    width: 30px;
-    height: 30px;
-    fill: white;
-}
-
-
-
-
-
+/*_____________________________________________________________________________________________*/
+/*CHAT IMPLEMENTATION*/
 
 .chat-container {
     position: fixed;
@@ -383,6 +363,11 @@ button:disabled {
     word-wrap: break-word;
 }
 
+.message-area {
+    margin-bottom: 15px;
+    color: white;
+}
+
 .player-message {
     background-color: #1e88e5;
     color: white;
@@ -422,7 +407,6 @@ button:disabled {
     background-color: #f57c00;
 }
 
-
 .close-chat {
     cursor: pointer;
     font-size: 20px;
@@ -432,6 +416,14 @@ button:disabled {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+
+.player-avatar {
+    font-size: 2rem;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -444,3 +436,35 @@ button:disabled {
     left: 0;
     pointer-events: none;
 }
+
+
+
+
+.chat-icon svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+}
+
+.chat-icon {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #ff9800;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 100;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.chat-icon:hover {
+    transform: scale(1.1);
+    background-color: #f57c00;
+}
+

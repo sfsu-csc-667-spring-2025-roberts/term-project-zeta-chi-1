@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--_____________________________________________________________________________________________-->
+    <!-- HEAD SECTION -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Homepage</title>
     <link rel="stylesheet" href="/css/style.css">
-
 </head>
 <body>
+
+<!--_____________________________________________________________________________________________-->
+<!-- HEADER / TOP BAR -->
+
 <header class="top-bar">
-    <div class="logo"><a href="/home">
-        <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
-    </a></div>
+    <div class="logo">
+        <a href="/home">
+            <img src="/favicon.ico" id="top-bar-logo" alt="Play UNO!" />
+        </a>
+    </div>
     <div class="account-menu">
         <button id="account-icon" class="account-icon">👤</button>
         <div id="dropdown-menu" class="dropdown-content hidden">
@@ -21,11 +28,16 @@
     </div>
 </header>
 
+<!--_____________________________________________________________________________________________-->
+<!-- MAIN CONTAINER -->
+
 <div class="container">
     <h1 style="color: white">Welcome to UNO!</h1>
     <p id="status-message" style="text-align: center; margin: 20px 0; color: white">
-
     </p>
+
+    <!--_____________________________________________________________________________________________-->
+    <!-- GAME SECTION -->
 
     <div class="game-section">
         <h2>Create a Game</h2>
@@ -39,6 +51,8 @@
             <button id="create-game-btn" disabled>Create Game</button>
         </div>
 
+        <!--_____________________________________________________________________________________________-->
+        <!-- GAME LOBBIES LIST -->
 
         <div class="section-title">
             <h2>Game Lobbies</h2>
@@ -49,20 +63,22 @@
             <li>Loading lobbies...</li>
         </ul>
 
+        <!--_____________________________________________________________________________________________-->
+        <!-- ACTIVE GAMES LIST  -->
 
-    <!--ACTIVE GAMES DESIGN-->
+        <!--
+        <div class="section-title">
+            <h2>Active Games</h2>
+            <button class="refresh-btn" id="refresh-games">Refresh</button>
+        </div>
+        <p>Resume or spectate active games:</p>
+        <ul id="games-list" class="games-list">
+            <li>Loading games...</li>
+        </ul>
+        -->
 
-
-<!--        <div class="section-title">-->
-<!--            <h2>Active Games</h2>-->
-<!--            <button class="refresh-btn" id="refresh-games">Refresh</button>-->
-<!--        </div>-->
-<!--        <p>Resume or spectate active games:</p>-->
-<!--        <ul id="games-list" class="games-list">-->
-<!--            <li>Loading games...</li>-->
-<!--        </ul>-->
-
-
+        <!--_____________________________________________________________________________________________-->
+        <!-- USER STATS -->
 
         <h2 class="stats-header">Your Stats</h2>
         <div class="stats-container">
@@ -78,10 +94,13 @@
     </div>
 </div>
 
+<!--_____________________________________________________________________________________________-->
+<!-- JAVASCRIPT: AVATAR LOGIC -->
+
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         try {
-            const res = await fetch('/api/auth/me'); // Or your current user endpoint
+            const res = await fetch('/api/auth/me');
             if (!res.ok) return;
 
             const data = await res.json();
@@ -92,7 +111,7 @@
             const accountIcon = document.getElementById('account-icon');
             accountIcon.textContent = ''; // Clear the 👤 emoji
 
-            // Create a small circular avatar container
+
             const avatarContainer = document.createElement('div');
             avatarContainer.style.position = 'relative';
             avatarContainer.style.width = '40px';
@@ -101,7 +120,7 @@
             avatarContainer.style.overflow = 'hidden';
             avatarContainer.style.background = '#fff';
 
-            // Add each image layer (skin, clothes, eyes, etc.)
+
             for (const part of ['skin', 'clothes', 'eyes', 'head', 'mouth']) {
                 const img = document.createElement('img');
                 img.src = avatarData[part];
@@ -121,8 +140,11 @@
     });
 </script>
 
+<!--_____________________________________________________________________________________________-->
+<!-- JAVASCRIPT: SOCKET + PAGE SCRIPT -->
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/home.js"></script>
+
 </body>
 </html>

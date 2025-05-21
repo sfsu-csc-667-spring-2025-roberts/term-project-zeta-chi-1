@@ -1,89 +1,113 @@
-<!-- public/html/index.html --> 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--_____________________________________________________________________________________________-->
+    <!-- HEAD SECTION -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UNO Login</title>
     <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
-    <div class="container">
-        <h1 id="title-h1"></h1>
-        <div id="error-message" class="error"></div>
-        <form id="login-form">
-            <div>
-                <input type="email" id="email" name="email" placeholder="Email" required>
-            </div>
-            <div>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-            </div>
-            <div class="centered">
-                <button type="submit">Login</button>
-            </div>
-        </form>
 
-        <div class="centered">
-            <p style="font-size: 12px">Don't have an account? <a href="/register" style="text-decoration: none; color: #007bff; font-size: 12px">Register here</a></p>
+<!--_____________________________________________________________________________________________-->
+<!-- LOGIN CONTAINER -->
+
+<div class="container">
+    <h1 id="title-h1"></h1>
+
+    <!--_____________________________________________________________________________________________-->
+    <!-- ERROR MESSAGE DISPLAY -->
+
+    <div id="error-message" class="error"></div>
+
+    <!--_____________________________________________________________________________________________-->
+    <!-- LOGIN FORM -->
+
+    <form id="login-form">
+        <div>
+            <input type="email" id="email" name="email" placeholder="Email" required>
         </div>
+        <div>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="centered">
+            <button type="submit">Login</button>
+        </div>
+    </form>
 
+    <!--_____________________________________________________________________________________________-->
+    <!-- REGISTER LINK -->
+
+    <div class="centered">
+        <p style="font-size: 12px">
+            Don't have an account?
+            <a href="/register" style="text-decoration: none; color: #007bff; font-size: 12px">Register here</a>
+        </p>
     </div>
+</div>
 
-    <script>
-        const form = document.getElementById('login-form');
-        const errorMessage = document.getElementById('error-message');
-        const titleh1 = document.getElementById('title-h1');
-        titleh1.innerText = document.title;
+<!--_____________________________________________________________________________________________-->
+<!-- JS SECTION -->
 
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevents default form submission
-            errorMessage.textContent = ''; // Clears prev errors
+<script>
+    const form = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+    const titleh1 = document.getElementById('title-h1');
+    titleh1.innerText = document.title;
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevents default form submission
+        errorMessage.textContent = ''; // Clears prev errors
 
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-                if (response.ok) { // On successful login
-                     window.location.href = '/home';
-                } else {
-                    const data = await response.json();
-                    errorMessage.textContent = data.message || 'Login failed. Please check your credentials.';
-                    if (data.errors) { // Handles validation errors
-                         errorMessage.textContent = data.errors.map(e => e.msg).join(', ');
-                    }
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.ok) {
+                window.location.href = '/home';
+            } else {
+                const data = await response.json();
+                errorMessage.textContent = data.message || 'Login failed. Please check your credentials.';
+                if (data.errors) { // Handles validation errors
+                    errorMessage.textContent = data.errors.map(e => e.msg).join(', ');
                 }
-            } catch (error) {
-                console.error('Login Error:', error);
-                errorMessage.textContent = 'An error occurred during login.';
             }
-        });
+        } catch (error) {
+            console.error('Login Error:', error);
+            errorMessage.textContent = 'An error occurred during login.';
+        }
+    });
 
-        // Checks for query params
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('loggedout') === 'true') {
-            errorMessage.textContent = 'You have been logged out.';
-            window.history.replaceState(null, null, '/index'); // Remove param from url
-        }
-        if (urlParams.get('registered') === 'true') {
-             const successMsg = document.createElement('p');
-             successMsg.textContent = 'Registration successful! Please log in.';
-             successMsg.style.color = 'green';
-             successMsg.classList.add('success'); // Registration set to success
-             form.parentNode.insertBefore(successMsg, form);
-             window.history.replaceState(null, null, '/index');
-        }
-         if (urlParams.get('unauthorized') === 'true') {
-            errorMessage.textContent = 'Please log in to access that page.';
-            window.history.replaceState(null, null, '/index');
-        }
 
-    </script>
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('loggedout') === 'true') {
+        errorMessage.textContent = 'You have been logged out.';
+        window.history.replaceState(null, null, '/index'); // Remove param from url
+    }
+
+    if (urlParams.get('registered') === 'true') {
+        const successMsg = document.createElement('p');
+        successMsg.textContent = 'Registration successful! Please log in.';
+        successMsg.style.color = 'green';
+        successMsg.classList.add('success');
+        form.parentNode.insertBefore(successMsg, form);
+        window.history.replaceState(null, null, '/index');
+    }
+
+    if (urlParams.get('unauthorized') === 'true') {
+        errorMessage.textContent = 'Please log in to access that page.';
+        window.history.replaceState(null, null, '/index');
+    }
+</script>
+
 </body>
 </html>
