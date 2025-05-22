@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--_____________________________________________________________________________________________-->
+    <!-- HEAD SECTION -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>UNO Game</title>
     <link rel="stylesheet" href="/css/game.css" />
 </head>
 <body>
+
+<!--_____________________________________________________________________________________________-->
+<!-- MAIN GAME CONTAINER -->
+
 <div class="game-container">
 
-    <div id="other-players-hands" >
-        <!-- Opponents' hands will be rendered here -->
+    <!--_____________________________________________________________________________________________-->
+    <!-- OPPONENTS HANDS -->
+
+    <div id="other-players-hands">
+        <!-- opponents hands will be shown here -->
     </div>
 
-
+    <!--_____________________________________________________________________________________________-->
+    <!-- CENTER BOARD (DRAW & DISCARD PILES) -->
 
     <div class="center-board">
         <div class="draw-area">
@@ -29,14 +40,18 @@
         </div>
     </div>
 
-
+    <!--_____________________________________________________________________________________________-->
+    <!-- COLOR PICKER -->
 
     <div class="color-picker" id="color-picker" style="display: none;">
-            <button data-color="red" class="red"></button>
-            <button data-color="green" class="green"></button>
-            <button data-color="blue" class="blue"></button>
-            <button data-color="yellow" class="yellow"></button>
-        </div>
+        <button data-color="red" class="red"></button>
+        <button data-color="green" class="green"></button>
+        <button data-color="blue" class="blue"></button>
+        <button data-color="yellow" class="yellow"></button>
+    </div>
+
+    <!--_____________________________________________________________________________________________-->
+    <!-- PLAYER HAND & CONTROLS -->
 
     <div class="player-hand-container">
         <div class="message-area" id="message-area">Waiting for game state...</div>
@@ -47,12 +62,15 @@
             <div class="hand" id="player-hand">
                 <!-- Cards go here -->
             </div>
+
             <div class="button-group">
                 <button id="draw-button" disabled>Draw Card</button>
                 <button id="uno-button" disabled>Call UNO!</button>
             </div>
         </div>
 
+        <!--_____________________________________________________________________________________________-->
+        <!-- CHAT ICON -->
 
         <div class="chat-icon" id="chat-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -61,7 +79,9 @@
             </svg>
         </div>
 
-        <!-- Chat Container -->
+        <!--_____________________________________________________________________________________________-->
+        <!-- CHAT CONTAINER -->
+
         <div class="chat-container" id="chat-container">
             <div class="chat-header">
                 <span>Game Chat</span>
@@ -81,17 +101,18 @@
             </div>
         </div>
 
+        <!--_____________________________________________________________________________________________-->
+        <!-- GAME ID DISPLAY -->
 
         <div id="game-id-display" class="gameID">Game ID: Loading...</div>
-
     </div>
-
-
-
-
 </div>
+
+<!--_____________________________________________________________________________________________-->
+<!-- JAVASCRIPT -->
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/game.js"></script>
+
 </body>
 </html>

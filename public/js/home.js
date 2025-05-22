@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Logout functionality
+    // logout functionality
     if (logoutLink) {
         logoutLink.addEventListener('click', async (event) => {
             event.preventDefault();

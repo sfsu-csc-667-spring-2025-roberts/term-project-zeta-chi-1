@@ -9,6 +9,9 @@ body {
     min-height: 100vh;
 }
 
+/*_____________________________________________________________________________________________*/
+/*MAIN STYLING DESIGN*/
+
 .container {
     width: 100%;
     max-width: 400px;
@@ -18,12 +21,23 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+
 h1 {
     font-family: 'Arial Black', sans-serif;
     color: #555;
     text-align: center;
     margin-bottom: 20px;
 }
+
+/*_____________________________________________________________________________________________*/
+/*INPUT DESIGN*/
 
 input {
     width: 100%;
@@ -33,6 +47,9 @@ input {
     border-radius: 4px;
     box-sizing: border-box;
 }
+
+/*_____________________________________________________________________________________________*/
+/*BUTTON DESIGN*/
 
 button {
     background-color: #007bff;
@@ -48,6 +65,9 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+/*_____________________________________________________________________________________________*/
+/*BACKEND MESSAGES DESIGN*/
 
 .error, .success {
     padding: 10px;
@@ -70,10 +90,4 @@ button:hover {
     display: none;
 }
 
-.centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-}
+
