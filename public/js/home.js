@@ -198,6 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendButton = document.getElementById('send-button');
     const chatMessages = document.getElementById('chat-messages');
 
+    if (chatContainer) {
+        chatContainer.style.display = 'none';
+    }
+
     chatIcon?.addEventListener('click', () => {
         chatContainer.style.display = chatContainer.style.display === 'flex' ? 'none' : 'flex';
         chatInput.focus();
