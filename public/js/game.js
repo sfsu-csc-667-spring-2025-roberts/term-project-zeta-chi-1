@@ -1,5 +1,4 @@
 // public/js/game.js
-
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[Game Client] DOMContentLoaded');
 
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageArea = document.getElementById('message-area');
     const colorPicker = document.getElementById('color-picker');
     const handh2 = document.getElementById('handh2');
-
+    const avatarDiv = document.getElementById('player-avatar');
 
     // Game State Vars
     let myPlayerId = null;
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMyTurn = false;
     let hasSentReady = false;
 
-     // Get gameId from URL query param
+    // Get gameId from URL query param
     const urlParams = new URLSearchParams(window.location.search);
     gameId = urlParams.get('gameId');
     console.log(`[Game Client] URL Game ID: ${gameId}`);
@@ -46,24 +45,55 @@ document.addEventListener('DOMContentLoaded', () => {
         return; // Stop if no gameId
     }
 
+    // Load player avatar
+    function loadPlayerAvatar() {
+        fetch('/api/auth/me')
+            .then(res => res.json())
+            .then(data => {
+                const avatarData = data.user?.avatarData;
+                if (!avatarData || typeof avatarData !== 'object') {
+                    console.warn('No valid avatar data.');
+                    return;
+                }
+                if (avatarDiv) {
+                    avatarDiv.innerHTML = ''; // Clear existing avatar
+                    const parts = ['skin', 'clothes', 'eyes', 'head', 'mouth'];
+                    parts.forEach(part => {
+                        if (avatarData[part]) {
+                            const img = document.createElement('img');
+                            img.src = avatarData[part];
+                            img.alt = part;
+                            img.onerror = function() {
+                                console.error(`Failed to load avatar part: ${img.src}`);
+                                img.src = '/placeholder.svg';
+                            };
+                            avatarDiv.appendChild(img);
+                        }
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Failed to load avatar:', err);
+            });
+    }
 
     // Helper Functions
     function renderCard(card, isTopCard = false) {
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('card', card.color);
-         if (isTopCard) {
-             cardDiv.classList.add('discard-pile-card');
-             cardDiv.style.cursor = 'default'; // Disable Click
-         } else {
-             cardDiv.dataset.cardId = card.id; // Card ID for click actions
-         }
+        if (isTopCard) {
+            cardDiv.classList.add('discard-pile-card');
+            cardDiv.style.cursor = 'default'; // Disable Click
+        } else {
+            cardDiv.dataset.cardId = card.id; // Card ID for click actions
+        }
 
         let displayValue = card.value; //special cards
-         if (card.value === 'skip') displayValue = '🚫';
-         if (card.value === 'reverse') displayValue = '🔄';
-         if (card.value === 'draw2') displayValue = '+2';
-         if (card.value === 'wild') displayValue = 'Wild';
-         if (card.value === 'draw4') displayValue = 'W +4';
+        if (card.value === 'skip') displayValue = '🚫';
+        if (card.value === 'reverse') displayValue = '🔄';
+        if (card.value === 'draw2') displayValue = '+2';
+        if (card.value === 'wild') displayValue = 'Wild';
+        if (card.value === 'draw4') displayValue = 'W +4';
 
         cardDiv.textContent = displayValue;
         cardDiv.title = `${card.color} ${card.value}`;
@@ -77,12 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("Received invalid state:", state);
             if(messageArea) messageArea.textContent = "Waiting for valid game state...";
             return;
-         }
+        }
         currentGameState = state; // Stores current state
-    
+
         // See if it's my turn or not
         isMyTurn = myPlayerId === state.currentPlayerId && !state.isGameOver;
-    
+
         // Player Renderer
         if (playersArea) {
             playersArea.innerHTML = ''; // Clear prev players
@@ -104,28 +134,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 nameSpan.textContent = nameText;
                 playerDiv.appendChild(nameSpan);
 
-
-     
                 if (player.id === state.currentPlayerId && !state.isGameOver) {
                     playerDiv.classList.add('current-turn'); // Highlight current turn
                 }
                 playersArea.appendChild(playerDiv);
             });
         }
-    
+
         // Turn Update Messages
-         if (messageArea && !state.isGameOver) { // Avoids overwrite of game over
-             if (isMyTurn) {
-                 messageArea.textContent = "Your Turn!";
-                 messageArea.style.color = 'green';
-             } else {
-                 const currentPlayerInfo = state.players.find(p => p.id === state.currentPlayerId);
-                 messageArea.textContent = `Waiting for ${currentPlayerInfo?.firstName ?? 'opponent'}...`;
-                  messageArea.style.color = '#555';
-             }
-         }
-    
-    
+        if (messageArea && !state.isGameOver) { // Avoids overwrite of game over
+            if (isMyTurn) {
+                messageArea.textContent = "Your Turn!";
+                messageArea.style.color = 'green';
+            } else {
+                const currentPlayerInfo = state.players.find(p => p.id === state.currentPlayerId);
+                messageArea.textContent = `Waiting for ${currentPlayerInfo?.firstName ?? 'opponent'}...`;
+                messageArea.style.color = '#555';
+            }
+        }
+
+
         // Discard pile
         if (topCardDisplay) {
             topCardDisplay.innerHTML = ''; // Clears prev
@@ -138,11 +166,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Set current player's hand info
-        if (handh2) { 
+        if (handh2) {
             const currPlayerInfo = state.players.find(p => p.id === myPlayerId);
+            console.log('Current player avatar data:', currPlayerInfo?.avatarData);
             let curr_email = "";
             if (currPlayerInfo) {
                 curr_email = currPlayerInfo.email;
+
+                // Update player avatar here too (this is for the simple icon display)
+                const playerAvatarElement = document.getElementById('player-avatar');
+                if (playerAvatarElement) {
+                    if (currPlayerInfo.avatarData?.icon) {
+                        playerAvatarElement.textContent = currPlayerInfo.avatarData.icon;
+                    } else {
+                        playerAvatarElement.textContent = '👤'; // Default avatar
+                    }
+                    playerAvatarElement.style.display = 'flex';
+                }
             }
             if (curr_email != "") {
                 handh2.textContent = curr_email.concat("'s ✋🏼");
@@ -150,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (deckCountSpan) deckCountSpan.textContent = state.drawPileSize; // Renders the deck
-    
+
         // Check if player has playable cards on their turn
         let hasPlayableCard = false; // Assumed
         if (isMyTurn && state.yourHand) {
@@ -158,16 +198,16 @@ document.addEventListener('DOMContentLoaded', () => {
             hasPlayableCard = state.yourHand.some(card => {
                 // Check standard validity
                 const isStandardPlayable = card.color === 'wild' ||
-                                           (topCard && (card.color === state.currentColor || card.value === topCard.value));
+                    (topCard && (card.color === state.currentColor || card.value === topCard.value));
                 // Check Wild Draw 4 validity
                 if (card.value === 'draw4') return true;
-    
+
                 return isStandardPlayable;
             });
             console.log(`[Game Client updateUI] Is my turn. Has playable card? ${hasPlayableCard}`);
         }
-    
-    
+
+
         // Player Hand Renderer
         if (playerHandElement && state.yourHand) {
             playerHandElement.innerHTML = ''; // Clear prev hand
@@ -178,20 +218,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return valueOrder.indexOf(a.value) - valueOrder.indexOf(b.value); // Basic value sort
             }).forEach(card => {
                 const cardEl = renderCard(card);
-                 let isCardPlayableThisTurn = false; // Check if card can be played on this turn
-                 let isDisabled = true; // Assumed
-    
-                 if (isMyTurn) {
-                     const topCard = state.topCard;
-                     isCardPlayableThisTurn =
+                let isCardPlayableThisTurn = false; // Check if card can be played on this turn
+                let isDisabled = true; // Assumed
+
+                if (isMyTurn) {
+                    const topCard = state.topCard;
+                    isCardPlayableThisTurn =
                         card.color === 'wild' ||
                         (topCard && (card.color === state.currentColor || card.value === topCard.value));
-                     // WD4 always marked playable client-side
-                     if (card.value === 'draw4') isCardPlayableThisTurn = true;
-    
-                     isDisabled = !isCardPlayableThisTurn;
-                 } // Card is always disabled if not my turn
-    
+                    // WD4 always marked playable client-side
+                    if (card.value === 'draw4') isCardPlayableThisTurn = true;
+
+                    isDisabled = !isCardPlayableThisTurn;
+                } // Card is always disabled if not my turn
+
                 // Apply classes and styles
                 if (isCardPlayableThisTurn && !isDisabled) cardEl.classList.add('playable');
                 if (isDisabled) {
@@ -201,28 +241,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     cardEl.classList.remove('disabled');
                     cardEl.style.cursor = 'pointer';
                 }
-    
+
                 playerHandElement.appendChild(cardEl);
             });
         } else if (playerHandElement) {
-             console.warn("No hand data received for this player.");
-             playerHandElement.innerHTML = 'Waiting for hand...';
+            console.warn("No hand data received for this player.");
+            playerHandElement.innerHTML = 'Waiting for hand...';
         }
-    
-    
+
+
         // Draw button enable/disable (dont change this)
         if (drawButton) {
             drawButton.disabled = !isMyTurn || hasPlayableCard || state.drawPileSize === 0;
             console.log(`[Game Client updateUI] Draw Button Disabled: ${drawButton.disabled} (isMyTurn: ${isMyTurn}, hasPlayableCard: ${hasPlayableCard}, drawPileSize: ${state.drawPileSize})`);
         }
-    
+
         // Uno button
         if (unoButton) unoButton.disabled = !isMyTurn || !state.yourHand || state.yourHand.length > 2 || state.isGameOver;
-    
+
         // Color picker hidden unless needed by chooseColorRequest
         if (colorPicker) colorPicker.style.display = 'none';
-    
-    
+
+
         // Game over
         if (state.isGameOver) {
             if(messageArea) {
@@ -249,10 +289,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 c.style.cursor = 'not-allowed';
             });
         } else {    // Runs if game isn't over
-             if(messageArea) messageArea.classList.remove('game-over-message');
-             const existingHomeButton = document.getElementById('back-to-home-btn');
-             if (existingHomeButton) existingHomeButton.remove();
+            if(messageArea) messageArea.classList.remove('game-over-message');
+            const existingHomeButton = document.getElementById('back-to-home-btn');
+            if (existingHomeButton) existingHomeButton.remove();
         }
+
+        // Replace the existing other players hands section in your updateUI function with this:
+
+        // Replace the opponent avatar rendering section in your updateUI function (around line 270-310)
+// with this improved version:
 
         const otherPlayersHandsContainer = document.getElementById('other-players-hands');
         if (otherPlayersHandsContainer) {
@@ -260,13 +305,95 @@ document.addEventListener('DOMContentLoaded', () => {
 
             state.players.forEach(player => {
                 if (player.id !== myPlayerId) {
+                    console.log('Rendering opponent:', player.firstName || player.email, 'Avatar data:', player.avatarData);
+
                     const handDiv = document.createElement('div');
                     handDiv.classList.add('opponent-hand');
 
-                    const label = document.createElement('div');
-                    label.textContent = `${player.firstName}'s Cards (${player.cardCount})`;
-                    handDiv.appendChild(label);
+                    // Create header container for avatar and label
+                    const headerDiv = document.createElement('div');
+                    headerDiv.classList.add('opponent-header');
+                    headerDiv.style.display = 'flex';
+                    headerDiv.style.alignItems = 'center';
+                    headerDiv.style.gap = '10px';
+                    headerDiv.style.marginBottom = '10px';
 
+                    // Add opponent avatar
+                    const avatarDiv = document.createElement('div');
+                    avatarDiv.classList.add('opponent-avatar');
+                    avatarDiv.style.width = '40px';
+                    avatarDiv.style.height = '40px';
+                    avatarDiv.style.position = 'relative';
+                    avatarDiv.style.display = 'flex';
+                    avatarDiv.style.alignItems = 'center';
+                    avatarDiv.style.justifyContent = 'center';
+
+                    // Debug logging to see what avatar data we're getting
+                    console.log(`Avatar data for ${player.firstName || player.email}:`, {
+                        hasAvatarData: !!player.avatarData,
+                        avatarDataType: typeof player.avatarData,
+                        avatarDataKeys: player.avatarData ? Object.keys(player.avatarData) : 'none',
+                        hasIcon: !!player.avatarData?.icon,
+                        hasSkin: !!player.avatarData?.skin,
+                        fullAvatarData: player.avatarData
+                    });
+
+                    // Check for simple icon first (most common case)
+                    if (player.avatarData?.icon) {
+                        console.log(`Using icon avatar for ${player.firstName || player.email}: ${player.avatarData.icon}`);
+                        avatarDiv.textContent = player.avatarData.icon;
+                        avatarDiv.style.fontSize = '24px';
+                    }
+                    // Check if player has full avatar data (with parts)
+                    else if (player.avatarData && typeof player.avatarData === 'object' &&
+                        (player.avatarData.skin || player.avatarData.clothes ||
+                            player.avatarData.eyes || player.avatarData.head || player.avatarData.mouth)) {
+                        console.log(`Using full avatar for ${player.firstName || player.email}`);
+                        // Full avatar with parts
+                        const parts = ['skin', 'clothes', 'eyes', 'head', 'mouth'];
+                        let hasAnyPart = false;
+                        parts.forEach(part => {
+                            if (player.avatarData[part]) {
+                                hasAnyPart = true;
+                                const img = document.createElement('img');
+                                img.src = player.avatarData[part];
+                                img.alt = part;
+                                img.style.position = 'absolute';
+                                img.style.width = '100%';
+                                img.style.height = '100%';
+                                img.onerror = function() {
+                                    console.error(`Failed to load opponent avatar part: ${img.src}`);
+                                    img.style.display = 'none';
+                                };
+                                avatarDiv.appendChild(img);
+                            }
+                        });
+
+                        // If no parts loaded successfully, fall back to default
+                        if (!hasAnyPart) {
+                            console.log(`No avatar parts found for ${player.firstName || player.email}, using default`);
+                            avatarDiv.textContent = '👤';
+                            avatarDiv.style.fontSize = '24px';
+                        }
+                    }
+                    // Fallback to default avatar
+                    else {
+                        console.log(`Using default avatar for ${player.firstName || player.email} - no valid avatar data found`);
+                        avatarDiv.textContent = '👤';
+                        avatarDiv.style.fontSize = '24px';
+                    }
+
+                    // Add label with name and card count
+                    const label = document.createElement('div');
+                    label.textContent = `${player.firstName || player.email || 'Player'}'s Cards (${player.cardCount})`;
+                    label.style.fontWeight = 'bold';
+
+                    // Assemble header
+                    headerDiv.appendChild(avatarDiv);
+                    headerDiv.appendChild(label);
+                    handDiv.appendChild(headerDiv);
+
+                    // Add the cards
                     const cardsDiv = document.createElement('div');
                     cardsDiv.classList.add('opponent-cards');
 
@@ -281,37 +408,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-
     }
 
-     function showTemporaryMessage(msg, type = 'info') {
-         if (!messageArea) return;
-         const oldMessage = messageArea.textContent;
-         const oldColor = messageArea.style.color;
+    function showTemporaryMessage(msg, type = 'info') {
+        if (!messageArea) return;
+        const oldMessage = messageArea.textContent;
+        const oldColor = messageArea.style.color;
 
-         messageArea.textContent = msg;
-         if (type === 'error') {
-             messageArea.style.color = 'red';
-         } else if (type === 'success') {
-              messageArea.style.color = 'blue';
-         } else {
-             messageArea.style.color = '#555';
-         }
+        messageArea.textContent = msg;
+        if (type === 'error') {
+            messageArea.style.color = 'red';
+        } else if (type === 'success') {
+            messageArea.style.color = 'blue';
+        } else {
+            messageArea.style.color = '#555';
+        }
 
-         setTimeout(() => {
-             // Check message for update before restore
-             if (messageArea.textContent === msg) {
+        setTimeout(() => {
+            // Check message for update before restore
+            if (messageArea.textContent === msg) {
                 if (isMyTurn && !currentGameState?.isGameOver) {
                     messageArea.textContent = "Your Turn!";
                     messageArea.style.color = 'green';
                 } else if (!currentGameState?.isGameOver) {
-                     const currentPlayerInfo = currentGameState?.players.find(p => p.id === currentGameState?.currentPlayerId);
+                    const currentPlayerInfo = currentGameState?.players.find(p => p.id === currentGameState?.currentPlayerId);
                     messageArea.textContent = `Waiting for ${currentPlayerInfo?.email ?? 'opponent'}...`;
                     messageArea.style.color = '#555';
                 }
-             }
-         }, 2500);
-     }
+            }
+        }, 2500);
+    }
 
 
     // Socket Event handlers
@@ -338,14 +464,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentGameState) {
             console.log('[Game Client] Re-rendering UI after receiving myInfo');
             updateUI(currentGameState);
+            updateChatUsername();
         }
+
+        // Load the player's avatar after getting user info
+        loadPlayerAvatar();
     });
 
 
     socket.on('gameState', (state) => {
         console.log(`[Game Client] Received gameState for GameID=${state?.gameId}`);
         if (state && state.gameId === gameId) { // Safety check for gameId match
-             updateUI(state);
+            updateUI(state);
+            updateChatUsername();
         } else if (state) {
             console.warn(`Received gameState for wrong game? Expected ${gameId}, Got ${state.gameId}`);
         }
@@ -369,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const cardData = currentGameState.yourHand.find(c => c.id === cardId);
                         if(cardData) {
                             const topCard = currentGameState.topCard;
-                            const isPlayable = cardData.color === 'wild' || (topCard && (cardData.color === currentGameState.currentColor || 
+                            const isPlayable = cardData.color === 'wild' || (topCard && (cardData.color === currentGameState.currentColor ||
                                 cardData.value === topCard.value));
                             if(isPlayable) {
                                 cardEl.classList.remove('disabled');
@@ -383,24 +514,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('actionResult', (data) => {
-         console.log('Action Result:', data.message);
-         showTemporaryMessage(data.message, 'success');
+        console.log('Action Result:', data.message);
+        showTemporaryMessage(data.message, 'success');
     });
 
-     socket.on('playerCalledUno', (data) => {
-         console.log(`${data.email} called Uno!`);
-         const playerDiv = document.getElementById(`player-${data.playerId}`);
-         if (playerDiv) {
-             const unoText = document.createElement('span');
-             unoText.textContent = ' UNO!';
-             unoText.style.color = 'orange';
-             unoText.style.fontWeight = 'bold';
-             playerDiv.appendChild(unoText);
-             setTimeout(() => unoText.remove(), 3000); // Remove UNO notif
-         }
-          // Send msg to other player
-          showTemporaryMessage(`${data.email} called UNO!`, 'info');
-     });
+    socket.on('playerCalledUno', (data) => {
+        console.log(`${data.email} called Uno!`);
+        const playerDiv = document.getElementById(`player-${data.playerId}`);
+        if (playerDiv) {
+            const unoText = document.createElement('span');
+            unoText.textContent = ' UNO!';
+            unoText.style.color = 'orange';
+            unoText.style.fontWeight = 'bold';
+            playerDiv.appendChild(unoText);
+            setTimeout(() => unoText.remove(), 3000); // Remove UNO notif
+        }
+        // Send msg to other player
+        showTemporaryMessage(`${data.email} called UNO!`, 'info');
+    });
 
 
     socket.on('chooseColorRequest', () => {
@@ -413,53 +544,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('cardDrawn', (data) => {
-         console.log("Drew a card:", data.card);
-         showTemporaryMessage(data.message, 'info');
-         // UI should update via next gameState emission to show new hand
-     });
+        console.log("Drew a card:", data.card);
+        showTemporaryMessage(data.message, 'info');
+        // UI should update via next gameState emission to show new hand
+    });
 
     socket.on('gameOver', (data) => {
         console.log("Game Over!", data);
         // Update UI handles displaying the final msg and disable controls based on state.isGameOver
         if (currentGameState) {
-             currentGameState.isGameOver = true;
-             currentGameState.winnerId = data.winnerId;
-             currentGameState.message = data.message;
-             updateUI(currentGameState);
+            currentGameState.isGameOver = true;
+            currentGameState.winnerId = data.winnerId;
+            currentGameState.message = data.message;
+            updateUI(currentGameState);
         } else {
-             if(messageArea) { // State fallback
-                  messageArea.textContent = data.message;
-                  messageArea.classList.add('game-over-message');
-             }
+            if(messageArea) { // State fallback
+                messageArea.textContent = data.message;
+                messageArea.classList.add('game-over-message');
+            }
         }
     });
 
     socket.on('gameError', (data) => {
         console.error('Game Error:', data.message);
-         if(messageArea) messageArea.textContent = `Error: ${data.message}`;
-         if(messageArea) messageArea.style.color = 'red';
+        if(messageArea) messageArea.textContent = `Error: ${data.message}`;
+        if(messageArea) messageArea.style.color = 'red';
     });
 
     // Handle case where server tells us the game doesn't exist or we can't join
     socket.on('gameNotFound', (data) => {
-        console.error(`[Game Client] Socket Connection Error: ${err.message}`, err);
-         if(messageArea) messageArea.textContent = `Error: ${data.message}. Redirecting home...`;
-         if(drawButton) drawButton.disabled = true;     // Disable actions
-         if(unoButton) unoButton.disabled = true;
-         if(colorPicker) colorPicker.style.display = 'none';
-         if(playerHandElement) playerHandElement.innerHTML = '';
-         setTimeout(() => { window.location.href = '/home'; }, 3000);
+        console.error(`[Game Client] Socket Connection Error: ${data.message}`);
+        if(messageArea) messageArea.textContent = `Error: ${data.message}. Redirecting home...`;
+        if(drawButton) drawButton.disabled = true;     // Disable actions
+        if(unoButton) unoButton.disabled = true;
+        if(colorPicker) colorPicker.style.display = 'none';
+        if(playerHandElement) playerHandElement.innerHTML = '';
+        setTimeout(() => { window.location.href = '/home'; }, 3000);
     });
 
     socket.on('playerDisconnected', (data) => {
-         console.warn('Player Disconnected:', data.email);
+        console.warn('Player Disconnected:', data.email);
     });
 
     socket.on('disconnect', (reason) => {
         console.error('Disconnected from server:', reason);
         if(messageArea && !currentGameState?.isGameOver) {
-             messageArea.textContent = 'Disconnected from server. Trying to reconnect now.';
-             messageArea.style.color = 'red';
+            messageArea.textContent = 'Disconnected from server. Trying to reconnect now.';
+            messageArea.style.color = 'red';
         }
         hasSentReady = false;
     });
@@ -477,7 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!cardElement) {
                 console.log('[Client CLICK] Click was not on a card element.');
                 return;
-            } 
+            }
             console.log('[Client CLICK] Card element found:', cardElement);
 
             if (!isMyTurn) {
@@ -491,17 +622,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!gameId) {
                 console.log('[Client CLICK] Blocked: gameId is null.');
                 return;
-           }
-           if (!currentGameState || currentGameState.isGameOver) {
-               console.log('[Client CLICK] Blocked: Game state invalid or game over.');
+            }
+            if (!currentGameState || currentGameState.isGameOver) {
+                console.log('[Client CLICK] Blocked: Game state invalid or game over.');
                 return;
-           }
+            }
 
             const cardId = cardElement.dataset.cardId;
             const cardData = currentGameState?.yourHand?.find(c => c.id === cardId);
             if (!cardId) {
                 console.error('[Client CLICK] CRITICAL: cardId not found in dataset!', cardElement);
-                 return;
+                return;
             }
             if (!cardData) {
                 console.error("Clicked card data not found in state!");
@@ -549,10 +680,10 @@ document.addEventListener('DOMContentLoaded', () => {
             socket.emit('callUno', { gameId });
             unoButton.disabled = true;
             setTimeout(() => { // enable button again based on next game state if still relevant
-                 if (isMyTurn && currentGameState && currentGameState.yourHand && currentGameState.yourHand.length <= 2) {
-                     unoButton.disabled = false;
-                 }
-             }, 1500);
+                if (isMyTurn && currentGameState && currentGameState.yourHand && currentGameState.yourHand.length <= 2) {
+                    unoButton.disabled = false;
+                }
+            }, 1500);
         });
     }
 
@@ -578,6 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
 
 
 

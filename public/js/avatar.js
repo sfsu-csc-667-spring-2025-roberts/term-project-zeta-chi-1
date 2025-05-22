@@ -48,7 +48,7 @@ function updateOption() {
     const imgElement = document.getElementById(layerId);
 
     if (imgElement) {
-        imgElement.onerror = function() {
+        imgElement.onerror = function () {
             console.error(`Failed to load image: ${imgElement.src}`);
             imgElement.src = '/placeholder.svg';
         };
@@ -104,8 +104,15 @@ function confirmCategory() {
 }
 
 function finalizeRegistration(userData) {
-    document.getElementById('status-message').textContent = 'Creating your account...';
-    document.getElementById('status-message').style.display = 'block';
+    const statusBox = document.getElementById('status-message');
+    if (!statusBox) {
+        console.error('❌ status-message element not found in DOM');
+        return;
+    }
+
+    statusBox.textContent = 'Creating your account...';
+    statusBox.style.display = 'block';
+    statusBox.classList.remove('error-message', 'success-message');
 
     fetch('/api/auth/register', {
         method: 'POST',
@@ -114,21 +121,29 @@ function finalizeRegistration(userData) {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                document.getElementById('status-message').textContent = 'Registration successful! Redirecting...';
-                document.getElementById('status-message').className = 'success-message';
+            console.log('Backend response:', data);
+            console.log('data.success value:', data.success);
+
+            if (data.message === 'User registered successfully') {
+                statusBox.textContent = 'Registration successful!';
+                statusBox.classList.remove('error-message');
+                statusBox.classList.add('success-message');
+
                 setTimeout(() => {
-                    window.location.href = '/index';
-                }, 2000);
+                    console.log('✅ Redirecting to index.html...');
+                    window.location.href = 'index.html';
+                }, 1000);
             } else {
-                document.getElementById('status-message').textContent = data.message || 'Registration failed.';
-                document.getElementById('status-message').className = 'error-message';
+                statusBox.textContent = data.message || 'Registration failed.';
+                statusBox.classList.remove('success-message');
+                statusBox.classList.add('error-message');
             }
         })
         .catch(error => {
             console.error('Registration Error:', error);
-            document.getElementById('status-message').textContent = 'An error occurred during registration.';
-            document.getElementById('status-message').className = 'error-message';
+            statusBox.textContent = 'An error occurred during registration.';
+            statusBox.classList.remove('success-message');
+            statusBox.classList.add('error-message');
         });
 }
 
@@ -150,7 +165,7 @@ function loadUserData() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadUserData();
     updateOption();
 });
